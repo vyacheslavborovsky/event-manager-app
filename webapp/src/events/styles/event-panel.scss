@@ -1,0 +1,67 @@
+@import "../../common/styles/material_global";
+
+.event-panel {
+  position: absolute;
+  top: 75px;
+  right: 0;
+  width: 380px;
+  border: 2px solid $md-primary-color;
+  height: calc(100vh - 100px);
+  z-index: 10;
+  padding: 20px 25px;
+  background: transparentize($md-grey-900, .15);
+
+  > div {
+    height: 50px;
+    width: 100%;
+  }
+
+  .header {
+
+    h2 {
+      color: transparentize($md-lime-a-700, .2);
+    }
+  }
+
+  .label, .value {
+    font-weight: 700;
+    color: #fff;
+    font-size: 16px;
+  }
+
+  .label {
+    text-decoration: underline;
+
+    &:hover {
+      cursor: pointer;
+      text-decoration: none;
+    }
+  }
+
+  .value {
+    color: $md-amber-700;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+
+    &:hover {
+      cursor: pointer;
+      color: transparentize($md-secondary-color, .15);
+    }
+  }
+
+  .md-tooltip-container {
+    * {
+      padding: 5px 10px;
+      font-size: 14px;
+    }
+  }
+
+  .close-icon {
+    font-size: 26px !important;
+    color: $md-red-700;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}

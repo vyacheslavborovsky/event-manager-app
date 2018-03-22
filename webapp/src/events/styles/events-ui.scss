@@ -1,0 +1,103 @@
+@import "../../common/styles/material_global";
+
+
+.events-ui {
+  overflow-x: hidden;
+
+  .md-card-title {
+
+    .md-card-title--large {
+      font-size: 26px;
+      font-weight: 800;
+      line-height: 55px;
+      font-family: "Baskerville Old Face", sans-serif;
+    }
+
+    margin: 10px 0;
+  }
+
+  .md-tab-indicator {
+    height: 8px !important;
+    border-radius: 15px;
+  }
+
+  .md-tab {
+    height: 54px !important;
+
+    .md-tab-label {
+      font-size: 14px;
+      font-weight: 800;
+    }
+  }
+
+  .md-card-text {
+    padding: 0 20px 20px 20px;
+  }
+
+  .md-tabs-container {
+    width: 95vw;
+
+    .md-table-row {
+
+      &:hover {
+        cursor: pointer;
+        background: transparentize($md-teal-500, .7);
+      }
+
+      &.selected {
+        background: transparentize($md-blue-grey-800, .6);
+      }
+
+      .md-table-column {
+        display: flex;
+        height: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        padding: 10px;
+        border-right: 1px solid transparentize($md-blue-grey-600, .65);
+
+        &:last-child {
+          border-right: 1px solid $md-blue-grey-600;
+        }
+
+        .value {
+          font-size: 16px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          margin: auto;
+        }
+      }
+    }
+
+
+    .md-data-table {
+
+      border-left: 1px solid $md-blue-grey-600;
+      border-bottom: 1px solid $md-blue-grey-600;
+
+      .md-table-header {
+
+        position: relative;
+        background-color: transparentize($md-amber-900, .7);
+
+        .md-table-row {
+
+          &:hover {
+            background: none;
+          }
+
+          .md-table-column {
+            color: $md-black-base;
+            font-weight: 800;
+
+            &:hover {
+              background: transparentize($md-red-a-400, .6);
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "user": {
+    "local": {
+      "username": "test_user",
+      "password": "aA1!",
+      "email": "salesfusiontest@gmail.com"
+    }
+  },
+  "events": [
+    {
+      "title": "Event title 1",
+      "description": "Event description 1",
+      "allDayEvent": true
+    },
+    {
+      "title": "Event title 2",
+      "description": "Event description 2",
+      "allDayEvent": false
+    },
+    {
+      "title": "Event title 3",
+      "description": "Event description 3",
+      "allDayEvent": false
+    }
+  ],
+  "newEvent": {
+    "title": "New Event",
+    "description": "New Description",
+    "allDayEvent": true
+  }
+}

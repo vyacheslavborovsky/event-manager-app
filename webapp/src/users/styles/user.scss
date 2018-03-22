@@ -1,0 +1,85 @@
+@import "../../common/styles/material_global";
+
+
+.auth-container {
+  max-width: 530px !important;
+
+  .info-container {
+    margin-top: 15px !important;
+  }
+}
+
+.tweet-enter {
+  opacity: 0.01;
+  transform: translateX(-75px);
+
+  &.tweet-enter-active {
+    opacity: 1;
+    transform: translateX(0px);
+    transition: 700ms;
+  }
+
+}
+
+.tweet-leave {
+  opacity: 1;
+  transform: translateX(0px);
+
+  &.tweet-leave-active {
+    opacity: 0.01;
+    transform: translateX(75px);
+    transition: 700ms;
+  }
+
+}
+
+.user-profile {
+  border-bottom: 2px solid $md-primary-color;
+  background: $md-green-300;
+  padding: 15px;
+
+  .profileIcon {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .md-selection-control-label {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+  }
+
+  .md-avatar {
+    height: 65px;
+    width: 65px;
+  }
+
+  .username {
+    font-size: 20px;
+    text-align: center;
+    text-transform: uppercase;
+    text-decoration: underline;
+    color: $md-black-base;
+  }
+
+  .email {
+    font-size: 18px;
+    text-align: center;
+    color: darkblue;
+  }
+
+  .twitter-section {
+    border-top: 2px solid $md-primary-color;
+
+    .twitter-header {
+      font-size: 20px;
+      color: $md-deep-purple-600;
+      text-align: center;
+      font-weight: 800;
+      text-decoration: underline;
+
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+}

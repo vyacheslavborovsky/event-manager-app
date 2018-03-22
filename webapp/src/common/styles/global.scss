@@ -1,0 +1,203 @@
+@import "material_global";
+@import "../../../node_modules/leaflet/dist/leaflet.css";
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+.leaflet-container {
+  height: 600px;
+  width: 600px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.md-cross-fade-enter {
+  opacity: .01;
+  transform: translate3d(0, 16px, 0);
+
+  &.md-cross-fade-enter-active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition-duration: 0.3s;
+    transition-property: transform, opacity;
+  }
+}
+
+.main-container {
+  margin-top: 75px !important;
+}
+
+#appToolbar {
+  display: flex;
+
+  #appToolbar-list {
+
+  }
+}
+
+#appToolbar-toggle {
+  margin: auto 0;
+
+  &.md-btn--hover {
+    background: transparent;
+  }
+}
+
+nav {
+  .md-list {
+    background: $md-blue-grey-100;
+  }
+}
+
+.align-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.disabled-item {
+  pointer-events: none;
+  background: transparentize($md-red-a-400, .88) !important;
+}
+
+.message {
+  font-size: 16px;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+
+  &.loading-label {
+    font-size: 24px;
+    color: $md-primary-color;
+  }
+}
+
+.success-message {
+  color: $md-green-a-700 !important;
+  text-shadow: 0 0 5px $md-green-a-400 !important;
+}
+
+.error-message {
+  color: $md-red-a-700 !important;
+  text-shadow: 0 0 5px $md-red-700 !important;
+}
+
+.warning-message {
+  color: $md-amber-900 !important;
+  text-shadow: 0 0 5px $md-amber-a-700 !important;
+}
+
+.info-message {
+  color: $md-blue-grey-600 !important;
+  text-shadow: 0 0 5px $md-blue-grey-200 !important;
+}
+
+.md-text-field {
+  color: $md-primary-color !important;
+}
+
+.input-error {
+
+  label {
+    color: $md-red-600;
+  }
+
+  .md-divider {
+    background: $md-red-a-700;
+  }
+}
+
+@media screen and (min-width: 320px) {
+  .tweet-box {
+    position: absolute;
+    top: 10%;
+    left: 1%;
+    display: none !important;
+    width: 0;
+    box-shadow: 0 0 16px rgba(0, 0, 0, 0.5);
+    border: 1px solid $md-primary-color;
+    border-radius: 5px;
+    padding: 10px !important;
+    background: transparentize($md-secondary-color, .7);
+
+    .header {
+      color: $md-blue-grey-800;
+      font-size: 22px !important;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      text-align: center;
+
+      .key-word {
+        font-weight: 800;
+        color: $md-red-800;
+        font-size: 26px;
+        font-family: "Baskerville Old Face", sans-serif !important;
+      }
+    }
+
+    .clear-btn {
+      margin-bottom: 15px;
+    }
+
+  }
+}
+
+@media screen and (min-width: 1568px) {
+  .tweet-box {
+    display: block !important;
+    width: 19vw;
+  }
+}
+
+.dashboard {
+  .fusioncharts-container {
+    min-width: 500px !important;
+    min-height: 500px !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .message {
+    font-size: 22px !important;
+  }
+
+  .pie-chart {
+    overflow: hidden;
+  }
+
+  @media screen and (min-width: 320px) {
+    .pie-chart {
+      padding-top: 35px !important;
+      border-top: 1px solid $md-primary-color;
+
+      .recharts-wrapper {
+        overflow: hidden !important;
+      }
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    .bar-chart {
+      padding-left: 7% !important;
+    }
+
+    .pie-chart {
+      border-top: none;
+      padding-top: 0 !important;
+
+      .recharts-wrapper {
+        overflow: hidden !important;
+      }
+    }
+  }
+
+}
+

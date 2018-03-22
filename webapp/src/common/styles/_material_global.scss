@@ -1,0 +1,15 @@
+@import "react-md/src/scss/react-md";
+
+$md-primary-color: $md-indigo-700;
+$md-secondary-color: $md-teal-a-700;
+$md-light-theme: $md-light-green-50;
+
+@include react-md-everything
+
+@include react-md-theme-everything(
+                $md-purple-600,
+                $md-light-blue-a-700,
+                false,
+                'dark-theme'
+);
+

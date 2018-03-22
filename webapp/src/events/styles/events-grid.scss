@@ -1,0 +1,124 @@
+@import "../../common/styles/material_global";
+
+// Override Calendar styles
+.rbc-calendar {
+  height: calc(100vh - 100px) !important;
+
+  .rbc-toolbar {
+
+    button {
+      min-height: 25px;
+      font-size: 14px;
+      padding: 8px 10px;
+      box-shadow: none !important;
+      border: 1px solid $md-blue-500 !important;
+
+      &:hover {
+        cursor: pointer;
+        background: transparentize($md-cyan-500, .6) !important;
+      }
+
+      &.rbc-active {
+        background: transparentize($md-cyan-500, .6) !important;
+      }
+    }
+  }
+
+  .rbc-row-segment {
+    padding: 4px !important;
+    text-align: center !important;
+    font-family: serif !important;
+  }
+
+
+  .rbc-day-bg {
+    border: 1px solid $md-secondary-color;
+
+    &:hover {
+      cursor: grab;
+      background: transparentize($md-green-a-400, .5);
+    }
+  }
+
+
+  .rbc-event {
+
+    &:hover {
+      cursor: move;
+    }
+
+    &.rbc-selected {
+      background: $md-teal-500;
+    }
+  }
+
+  .rbc-header {
+    padding: 8px 10px;
+    font-size: 16px;
+  }
+
+  .rbc-today {
+    border: 2px solid $md-pink-a-700 !important;
+    background: transparentize($md-pink-a-700, .8);
+  }
+
+  .rbc-time-content {
+    .rbc-today {
+
+    }
+  }
+
+  .rbc-timeslot-group {
+
+    .rbc-time-slot {
+
+      &:hover {
+        cursor: grab;
+        border: 1px solid $md-teal-500;
+        background-color: transparentize($md-teal-500, .5);
+      }
+    }
+
+  }
+
+  .rbc-slot-selection {
+    background-color: transparentize($md-orange-700, .3) !important;
+    width: 150px;
+  }
+
+  .rbc-selected-cell {
+    border: 2px solid $md-orange-700 !important;
+    background: transparentize($md-orange-700, .7) !important;
+  }
+
+  .rbc-addons-dnd-over {
+    background: transparentize($md-pink-a-700, .7) !important;
+    border: 3px dashed $md-pink-a-700 !important;
+  }
+
+
+}
+
+@media screen and (min-width: 320px) {
+  .rbc-calendar {
+    min-width: 98vw;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .rbc-calendar {
+    min-width: 90vw;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .rbc-calendar {
+    min-width: 80vw;
+  }
+}
+
+@media screen and (min-width: 1568px) {
+  .rbc-calendar {
+    min-width: 60vw;
+  }
+}

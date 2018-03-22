@@ -1,0 +1,84 @@
+@import "../../common/styles/material_global";
+
+.event-container {
+  max-width: 992px;
+
+  .md-card-title {
+    padding-top: 10px !important;
+  }
+
+  .md-expansion-panel-list {
+    margin-top: 15px;
+
+    .location-btn {
+      background: none !important;
+
+      > i {
+        font-size: 40px !important;
+        color: $md-teal-500 !important;
+        line-height: 25px;
+      }
+    }
+
+    .md-ink-container {
+
+      /deep/ * {
+        background: none !important;
+      }
+    }
+
+    .md-tooltip {
+      padding: 4px 8px !important;
+      font-size: 14px !important;
+    }
+  }
+
+  .footer {
+    margin-top: 25px !important;
+  }
+
+  &.disabled-item {
+
+    .md-expansion-panel-list {
+      z-index: -1;
+    }
+
+    .md-switch-container {
+
+      label {
+        z-index: -1;
+      }
+    }
+  }
+
+  .aux-footer {
+    margin-top: 40px;
+  }
+
+}
+
+#location {
+
+  &.md-dialog {
+    width: 950px;
+    height: 750px;
+
+    #location-title {
+      padding-bottom: 0;
+    }
+
+    .map-container {
+
+      .leaflet-container {
+        width: 90%;
+        height: 83%;
+        top: 56%;
+      }
+    }
+
+    .md-dialog-footer {
+    }
+  }
+}
+
+
