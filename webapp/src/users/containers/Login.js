@@ -4,6 +4,7 @@ import React, {PureComponent} from 'react';
 import {Card, CardText, CardTitle} from "react-md";
 import {connect} from "react-redux";
 import {Redirect} from "react-router-dom";
+import appConfig from "../../common/constants/config";
 
 
 class Login extends PureComponent {
@@ -23,6 +24,8 @@ class Login extends PureComponent {
                 <Redirect to={from}/>
             )
         }
+
+        console.log(appConfig.mode);
 
         return (
             <Card className="grid-noGutter-center-middle auth-container md-paper--5">
