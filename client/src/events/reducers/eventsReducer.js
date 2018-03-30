@@ -121,9 +121,7 @@ const eventsReducer = handleActions({
     }),
 
     [eventsActionTypes.DELETE_MULTIPLE_EVENT_SUCCESS]: (state, action) => {
-        console.log(state.data.length)
         const filteredEvents = state.data.filter(event => !action.payload.eventIds.includes(event.eventId));
-        console.log(filteredEvents.length)
 
         return {
             ...state,

@@ -26,36 +26,38 @@ exports.getEvents = function (req, res) {
         res.status(httpStatus.UNAUTHORIZED);
         return res.json({message: 'No user found to get appropriate events.'});
     }
-
-
 };
 
 exports.createEvent = function (req, res) {
-    if (req.body['startDate'] === undefined || req.body['endDate'] === undefined) {
-        res.status(httpStatus.BAD_REQUEST);
-        return res.json({message: "Invalid request payload", success: false});
-    }
-
-    const newEvent = new Event({
-        title: req.body['title'],
-        description: req.body['description'],
-        startDate: new Date(req.body['startDate']),
-        endDate: new Date(req.body['endDate']),
-        allDayEvent: req.body['allDayEvent'] ? req.body['allDayEvent'] : false,
-        location: req.body['location'] ? req.body['location'] : null,
-        userId: req.body['userId']
-    });
-
-    newEvent.save(function (err, event) {
-        if (err) {
-            console.log('Create Error ', err);
-            res.status(httpStatus.INTERNAL_SERVER_ERROR);
-            return res.json({message: "Error occurred during creating event."})
+    try {
+        if (req.body['startDate'] === undefined || req.body['endDate'] === undefined) {
+            res.status(httpStatus.BAD_REQUEST);
+            return res.json({message: "Invalid request payload", success: false});
         }
 
-        res.status(httpStatus.CREATED);
-        return res.json({message: "Event has been created successfully.", event: event});
-    })
+        const newEvent = new Event({
+            title: req.body['title'],
+            description: req.body['description'],
+            startDate: new Date(req.body['startDate']),
+            endDate: new Date(req.body['endDate']),
+            allDayEvent: req.body['allDayEvent'] ? req.body['allDayEvent'] : false,
+            location: req.body['location'] ? req.body['location'] : null,
+            userId: req.body['userId']
+        });
+
+        newEvent.save(function (err, event) {
+            if (err) {
+                console.log('Create Error ', err);
+                res.status(httpStatus.INTERNAL_SERVER_ERROR);
+                return res.json({message: "Error occurred during creating event."})
+            }
+
+            res.status(httpStatus.CREATED);
+            return res.json({message: "Event has been created successfully.", event: event});
+        });
+    } catch (err) {
+        console.log("Error: ", err);
+    }
 };
 
 exports.updateEvent = function (req, res) {
@@ -180,16 +182,20 @@ exports.deleteMultipleEvents = function (req, res) {
 
 
 exports.getActivityData = function (req, res) {
-    Event.getUsersActivityData()
-        .then(function (response) {
-            res.status(httpStatus.OK);
-            return res.json({data: response});
-        })
-        .catch(function (err) {
-            console.log('Error ', err);
-            res.status(httpStatus.INTERNAL_SERVER_ERROR);
-            return res.json({message: 'Server error occurred during fetching users activities.'});
-        })
+    try {
+        Event.getUsersActivityData()
+            .then(function (response) {
+                res.status(httpStatus.OK);
+                return res.json({data: response});
+            })
+            .catch(function (err) {
+                console.log('Error ', err);
+                res.status(httpStatus.INTERNAL_SERVER_ERROR);
+                return res.json({message: 'Server error occurred during fetching users activities.'});
+            })
+    } catch (err) {
+        console.log("Error: ", err);
+    }
 };
 
 exports.loadEventsDynamic = function (req, res) {
