@@ -37,6 +37,7 @@ exports.initWebSocket = function (server) {
     }
 
     webSocketServer.on('connection', function (ws, req) {
+        console.log('URL: ', req);
         const { query: { userId } } = url.parse(req.url, true);
         ws.id = userId;
         ws.on('pong', heartbeat);
