@@ -12,8 +12,8 @@
   ],
   "scripts": {
     "start": "set NODE_ENV=production && node server/src/index.js",
-    "build:react": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
-    "heroku-postbuild": "build:react && cd server/ && npm install && npm install --only=dev --no-shrinkwrap"
+    "install-client": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
+    "heroku-postbuild": "npm run install-client && cd server/ && npm install && npm install --only=dev --no-shrinkwrap"
   },
   "dependencies": {
     "express": "4.15.2"
