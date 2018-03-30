@@ -1,8 +1,8 @@
 const Twitter = require('twit');
-const WebSocket = require('ws');
 const config = require('./variable');
 
 
+console.log(config)
 const myTwitter = new Twitter({
     consumer_key: config.twitterProvider.consumerKey,
     consumer_secret: config.twitterProvider.consumerSecret,
