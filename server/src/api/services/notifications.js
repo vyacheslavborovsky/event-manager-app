@@ -6,6 +6,7 @@ const moment = require('moment');
 const getSocketServer = require("../../config/websocket").getSocketServer;
 const {sendNotificationMessage} = require("../utils/mailer");
 
+
 startNotificationJob = function () {
     console.log(`Notification Job has started at ${new Date().toLocaleString()}`);
     return new Promise(function (resolve, reject) {

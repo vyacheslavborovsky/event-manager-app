@@ -1,7 +1,5 @@
 const WebSocket = require('ws');
 const url = require('url');
-const config = require("./variable");
-const runNotificationJob = require("../api/utils/usersNotifyProcess").runNotificationJob;
 const clearNotificationJob = require("../api/utils/usersNotifyProcess").clearNotificationJob;
 const subscribeToTwitterStream = require("./twitter").subscribeToTwitterStream;
 
@@ -25,10 +23,6 @@ exports.initWebSocket = function (server) {
             }
         });
     };
-
-    if (config.mode === 'production') {
-        runNotificationJob();
-    }
 
     subscribeToTwitterStream(webSocketServer);
 
@@ -57,7 +51,7 @@ exports.initWebSocket = function (server) {
     function noop() {
     }
 
-    const interval = setInterval(function ping() {
+    setInterval(function ping() {
         webSocketServer.clients.forEach(function each(ws) {
             if (ws.isAlive === false) return ws.terminate();
 
@@ -65,11 +59,6 @@ exports.initWebSocket = function (server) {
             ws.ping(noop);
         });
     }, 30000);
-
-    process.on('exit', function () {
-        clearInterval(interval);
-        clearNotificationJob();
-    })
 };
 
 exports.getSocketServer = function () {

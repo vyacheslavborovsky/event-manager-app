@@ -19,7 +19,3 @@ exports.runNotificationJob = function () {
         }
     });
 };
-
-exports.clearNotificationJob = function () {
-    clearInterval(notificationTimer);
-};

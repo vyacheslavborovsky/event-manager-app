@@ -2,6 +2,7 @@ const expressServer = require('./config/express');
 const config = require("./config/variable");
 const {initWebSocket} = require("./config/websocket");
 const cluster = require('cluster');
+const runNotificationJob = require("./api/utils/usersNotifyProcess").runNotificationJob;
 const numCPUs = require('os').cpus().length;
 
 
@@ -24,4 +25,8 @@ if (cluster.isMaster) {
     });
 
     initWebSocket(appServer);
+
+    if (config.mode === 'production') {
+        runNotificationJob();
+    }
 }
