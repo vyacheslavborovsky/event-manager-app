@@ -32,14 +32,13 @@ startNotificationJob = function () {
                 const wss = getSocketServer();
 
                 events.forEach(event => {
-                    console.log(event['userId']['_id']);
                     const payload = {
                         ACTION_TYPE: 'UPCOMING_EVENT',
                         title: event['title'],
                         until: event['until']
                     };
 
-                    wss.setToParticularUser(event['userId']['_id'], payload);
+                    //wss.setToParticularUser(event['userId']['_id'], payload);
                     emailsArray.push(sendNotificationMessage(
                         event['userId']['local']['username'],
                         event['userId']['local']['email'],
