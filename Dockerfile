@@ -1,16 +1,33 @@
-FROM node:carbon
+#build react app
+FROM node:9.4.0-alpine as client
 
-WORKDIR /app
+WORKDIR /usr/app/client/
 
-ENV NODE_ENV=development
+COPY client/package*.json ./
 
-COPY package*.json ./
+RUN npm install -qy
 
-RUN npm install
+COPY client/ ./
 
-COPY src /app
-COPY .env.* ./
+RUN npm run build
 
-EXPOSE 5555
 
-CMD ["node", "./src/index.js"]
+# setup nodejs app and move react static files to serve
+FROM node:9.4.0-alpine
+
+WORKDIR /usr/app/
+COPY --from=client /usr/app/client/build/ ./client/build/
+
+WORKDIR /usr/app/server/
+
+COPY server/package*.json ./
+
+RUN npm install -qy
+
+COPY server/ ./
+
+ENV PORT 8000
+
+EXPOSE 8000
+
+CMD ["npm", "start:prod"]

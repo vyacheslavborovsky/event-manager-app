@@ -1,18 +1,33 @@
 version: '3'
 
 services:
-  event-manager:
-    build: .
+  server:
+    build:
+      context: ./server/
+    command: /usr/app/node_modules/.bin/nodemon src/index.js
+    volumes:
+          - ./server/:/usr/app
+          - /usr/app/node_modules
     ports:
       - "5555:5555"
     links:
       - mongodb
-    volumes:
-      - .:/app
-    depends_on:
-      - mongodb
+    environment:
+      - NODE_ENV=development
 
   mongodb:
     image: mongo
     ports:
       - "27017:27017"
+
+  client:
+    build:
+      context: ./client/
+    command: npm start
+    volumes:
+      - ./client:/usr/app
+      - /usr/app/node_modules
+    depends_on:
+      - server
+    ports:
+      - "3000:3000"
