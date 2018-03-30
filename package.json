@@ -11,7 +11,7 @@
     "server/node_modules"
   ],
   "scripts": {
-    "start": "set NODE_ENV=production && node server/src/index.js",
+    "start": "set NODE_ENV=production && node --optimize_for_size --max_old_space_size=920 --gc_interval=100 server/src/index.js",
     "install-client": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
     "heroku-postbuild": "npm run install-client && cd server/ && npm install && npm install --only=dev --no-shrinkwrap"
   },
