@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "start": "set NODE_ENV=production && node server/src/index.js",
-    "heroku:postbuild": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
+    "heroku-postbuild": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
   },
   "dependencies": {
     "express": "4.15.2"
@@ -20,6 +20,6 @@
     "type": "git",
     "url": "git+https://github.com/vyacheslavborovsky/event-manager-app.git"
   },
-  "author": "",
-  "license": "ISC"
+  "license": "MIT",
+  "devDependencies": {}
 }
