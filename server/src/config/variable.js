@@ -4,7 +4,7 @@ const mode = process.env.NODE_ENV.trim();
 
 if (mode !== 'production') {
     require('dotenv-safe').load({
-        path: path.join(__dirname, `../../.env.${process.env.NODE_ENV.trim()}`),
+        path: path.join(__dirname, `../../.env.${mode}`),
         sample: path.join(__dirname, '../../.env.example')
     });
 }
