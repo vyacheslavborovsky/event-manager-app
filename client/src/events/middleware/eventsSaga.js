@@ -1,7 +1,6 @@
 import commonActions from "../../common/actions/commonActions";
 import eventsActions from "../actions/eventsActions";
 import {call, take, put, fork} from "redux-saga/effects";
-import {delay} from "redux-saga";
 import {eventsActionTypes} from "../actions/eventsActions";
 import {eventServiceObj} from "../services/eventService";
 import {batchActions} from 'redux-batched-actions';
@@ -9,7 +8,6 @@ import {batchActions} from 'redux-batched-actions';
 
 function* getEvents(userId) {
     try {
-        yield call(delay, 1500);
         const response = yield call(eventServiceObj.getEvents, userId);
         const events = response['events'].map(item => {
             item['startDate'] = new Date(item['startDate']);
@@ -43,7 +41,6 @@ function* getEventsFlow() {
 
 function* removeEvent({eventId, userId}) {
     try {
-        yield call(delay, 1000);
         const response = yield call(eventServiceObj.deleteEvent, eventId, userId);
 
 
@@ -74,7 +71,6 @@ function* deleteEventFlow() {
 
 function* updateEvent({body, eventId}) {
     try {
-        yield call(delay, 1500);
         const response = yield call(eventServiceObj.updateEvent, eventId, body);
 
         const event = {
@@ -109,7 +105,6 @@ function* updateEventFlow() {
 
 function* createEvent(body) {
     try {
-        yield call(delay, 1500);
         const response = yield call(eventServiceObj.addEvent, body);
 
         const event = {
@@ -139,7 +134,6 @@ function* addEventFlow() {
 
 function* getEventById({eventId, userId}) {
     try {
-        yield call(delay, 1500);
         const response = yield call(eventServiceObj.getEventById, eventId, userId);
 
         const event = {

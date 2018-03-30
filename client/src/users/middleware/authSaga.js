@@ -9,8 +9,6 @@ import {storageServiceObj} from "../../common/services/storageService";
 
 function* authorize(username, password) {
     try {
-        console.log("Config: ", appConfig);
-
         const result = yield call(authServiceObj.login, {
             username,
             password
@@ -18,7 +16,6 @@ function* authorize(username, password) {
 
         if (result['success'] && result['x-auth-token']) {
             yield call(storageServiceObj.saveDataByName, 'token', result['x-auth-token']);
-
 
             try {
                 const currentUser = yield call(authServiceObj.getCurrentUser);
@@ -69,7 +66,6 @@ function* logout() {
 }
 
 function* initSessionUser() {
-    console.log("Config2: ", appConfig);
     if (storageServiceObj.hasStorageValueByKey('token')) {
         try {
             const currentUser = yield call(authServiceObj.getCurrentUser);
