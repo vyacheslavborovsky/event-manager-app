@@ -6,17 +6,13 @@
   "scripts": {
     "start:dev": "set NODE_ENV=development && nodemon src/index.js",
     "start:prod": "set NODE_ENV=production && pm2 start src/index.js",
-
     "pm2:list": "pm2 list",
     "pm2:delete": "pm2 delete index",
     "pm2:reload": "pm2 reload index",
-
     "docker:build": "docker build -t docker-dev-server .",
     "docker:open": "docker run -p 5555:5555 docker-dev-server:latest",
     "docker-compose:start": "docker-compose up",
-
     "docker:list": "docker ps -a",
-
     "test": "set NODE_ENV=testing && mocha \" src/test/*.spec.js\" --timeout 600000"
   },
   "author": "",
@@ -25,6 +21,7 @@
     "bcryptjs": "2.4.3",
     "bluebird": "3.5.0",
     "body-parser": "1.17.0",
+    "cluster": "0.7.7",
     "compression": "1.6.2",
     "cookie-parser": "1.4.3",
     "cors": "2.8.3",
@@ -47,6 +44,7 @@
     "mongoose": "4.13.12",
     "morgan": "1.8.1",
     "nodemailer": "4.6.3",
+    "os": "0.1.1",
     "passport": "0.4.0",
     "passport-http-bearer": "1.0.1",
     "passport-jwt": "3.0.0",
