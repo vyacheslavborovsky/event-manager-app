@@ -13,9 +13,9 @@ const appServer = expressServer.listen(PORT, () => {
 
 initWebSocket(appServer);
 
-/*if (config.mode === 'production') {
+if (config.mode === 'production') {
     runNotificationJob();
-}*/
+}
 
 /*if (cluster.isMaster) {
     console.error(`Node cluster master ${process.pid} is running`);
