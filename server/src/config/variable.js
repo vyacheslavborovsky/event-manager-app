@@ -11,6 +11,7 @@ if (mode !== 'production') {
 
 module.exports = {
     mode: mode,
+    appUrl: process.env['APP_URL'],
     common: {
         jwtSecret: 'secret-code',
         port: process.env['PORT']

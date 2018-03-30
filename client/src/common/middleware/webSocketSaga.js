@@ -51,12 +51,18 @@ function* webSocketChannelListener(webSocketChannel) {
 }
 
 const webSocketActionsHandler = (data, dispatch) => {
+    let message;
+
     switch (data['ACTION_TYPE']) {
         case commonActionTypes.NEW_TWEET:
             dispatch(commonActions.setNewTweet(data));
             break;
         case commonActionTypes.UPCOMING_EVENT:
-            const message = `Event ${data.title} start in ${data.until}`;
+            message = `Event ${data.title} start in ${data.until}`;
+            dispatch(commonActions.setAddToastMessage({text: message}));
+            break;
+        case commonActionTypes.REGISTERED_USER:
+            message = `New user '${data.username}' has been registered in the app`;
             dispatch(commonActions.setAddToastMessage({text: message}));
             break;
         default:

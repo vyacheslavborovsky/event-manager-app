@@ -44,7 +44,7 @@ exports.sendNotificationMessage = function (username, toEmail, eventId, title, u
             Event manager app support.
         `,
         html: `<p>Dear <b style="font-size: larger; color: brown; font-family: 'Copperplate Gothic Light',sans-serif">${username}</b>!</p> 
-                <p>Just want to notify you that your event - <a href=${'http://127.0.0.1:3000/#/events/' + eventId} target="_blank">${title}</a> should be start in <b>${until}</b>.</p>
+                <p>Just want to notify you that your event - <a href=${`${config.appUrl}/#/events/${eventId}`} target="_blank">${title}</a> should be start in <b>${until}</b>.</p>
                 </br>
                 </br>
                 <p>Best regards.</p>

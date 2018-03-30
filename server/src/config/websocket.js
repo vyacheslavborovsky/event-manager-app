@@ -1,9 +1,8 @@
 const WebSocket = require('ws');
 const url = require('url');
-const clearNotificationJob = require("../api/utils/usersNotifyProcess").clearNotificationJob;
 const subscribeToTwitterStream = require("./twitter").subscribeToTwitterStream;
 
-let webSocketServer;
+let webSocketServer = null;
 
 exports.initWebSocket = function (server) {
     webSocketServer = new WebSocket.Server({server});
@@ -62,6 +61,5 @@ exports.initWebSocket = function (server) {
 };
 
 exports.getSocketServer = function () {
-    return webSocketServer
+    return webSocketServer;
 };
-

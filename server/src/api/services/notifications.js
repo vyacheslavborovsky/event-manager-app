@@ -3,7 +3,6 @@ require('../models/event.schema');
 const Event = require('mongoose').model('Event');
 const initMongooseSession = require('../../config/mongoose');
 const moment = require('moment');
-const getSocketServer = require("../../config/websocket").getSocketServer;
 const {sendNotificationMessage} = require("../utils/mailer");
 
 
@@ -30,7 +29,6 @@ startNotificationJob = function () {
                     });
 
                 const emailsArray = [];
-                const wss = getSocketServer();
 
                 events.forEach(event => {
                     const payload = {
@@ -39,7 +37,7 @@ startNotificationJob = function () {
                         until: event['until']
                     };
 
-                    //wss.setToParticularUser(event['userId']['_id'], payload);
+                    process.send({message: 'Notify', payload: JSON.stringify(payload), userId: event['userId']['_id']});
                     emailsArray.push(sendNotificationMessage(
                         event['userId']['local']['username'],
                         event['userId']['local']['email'],
@@ -52,19 +50,20 @@ startNotificationJob = function () {
 
                 Promise.all(emailsArray)
                     .then(function (result) {
-                        resolve({message: 'Ended', total: result.length});
+                        resolve({message: 'Ended', payload: result.length});
                     })
-                    .catch(function (error) {
-                        reject({message: 'Error: ' + error.message});
+                    .catch(function () {
+                        reject({message: 'Error'});
                     })
             })
-            .catch(function (error) {
-                reject({message: 'Error: ' + error.message});
+            .catch(function () {
+                reject({message: 'Error'});
             });
     });
 };
 
 process.on('message', function (message) {
+    console.log(message)
     initMongooseSession.connect();
 
     if (message === 'startJob') {

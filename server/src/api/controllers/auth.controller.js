@@ -19,6 +19,14 @@ exports.signUp = (req, res, next) => {
         }
 
         sendWelcomeMessage(user.local.username, user.local.email, getSocketServer());
+        const wss = getSocketServer();
+
+        const payload = {
+            ACTION_TYPE: 'REGISTERED_USER',
+            username: user.local.username
+        };
+        
+        wss.broadcast(payload);
 
         res.status(httpStatus.OK);
         return res.json({message: "Account has been created", success: true, account: user});
