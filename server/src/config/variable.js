@@ -1,12 +1,16 @@
 const path = require('path');
 
-require('dotenv-safe').load({
-    path: path.join(__dirname, `../../.env.${process.env.NODE_ENV.trim()}`),
-    sample: path.join(__dirname, '../../.env.example')
-});
+const mode = process.env.NODE_ENV.trim();
+
+if (mode !== 'production') {
+    require('dotenv-safe').load({
+        path: path.join(__dirname, `../../.env.${process.env.NODE_ENV.trim()}`),
+        sample: path.join(__dirname, '../../.env.example')
+    });
+}
 
 module.exports = {
-    mode: process.env.NODE_ENV.trim(),
+    mode: mode,
     common: {
         jwtSecret: 'secret-code',
         port: process.env['PORT']
@@ -30,5 +34,5 @@ module.exports = {
         uri: process.env['MONGO_URI'],
         db: process.env['MONGO_DB'],
     },
-    logs: process.env.NODE_ENV === 'production' ? 'combined' : 'dev',
+    logs: mode === 'production' ? 'combined' : 'dev',
 };
