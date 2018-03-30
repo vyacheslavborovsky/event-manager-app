@@ -34,5 +34,5 @@ module.exports = {
         uri: process.env['MONGO_URI'],
         db: process.env['MONGO_DB'],
     },
-    logs: mode === 'production' ? 'combined' : 'dev',
+    logs: /*mode === 'production' ? 'combined' :*/ 'dev',
 };
