@@ -7,11 +7,13 @@
   },
   "cacheDirectories": [
     "node_modules",
-    "client/node_modules"
+    "client/node_modules",
+    "server/node_modules"
   ],
   "scripts": {
     "start": "set NODE_ENV=production && node server/src/index.js",
-    "heroku-postbuild": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build"
+    "build:react": "cd client/ && npm install && npm install --only=dev --no-shrinkwrap && npm run build",
+    "heroku-postbuild": "build:react && cd server/ && npm install && npm install --only=dev --no-shrinkwrap"
   },
   "dependencies": {
     "express": "4.15.2"
