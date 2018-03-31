@@ -6,9 +6,9 @@ import {eventServiceObj} from "../services/eventService";
 import {batchActions} from 'redux-batched-actions';
 
 
-function* getEvents(userId) {
+function* getEvents() {
     try {
-        const response = yield call(eventServiceObj.getEvents, userId);
+        const response = yield call(eventServiceObj.getEvents);
         const events = response['events'].map(item => {
             item['startDate'] = new Date(item['startDate']);
             item['endDate'] = new Date(item['endDate']);
@@ -34,14 +34,14 @@ function* getEvents(userId) {
 function* getEventsFlow() {
     while (true) {
         const action = yield take(eventsActionTypes.GET_EVENTS_REQUESTING);
-        yield call(getEvents, action.payload['userId']);
+        yield call(getEvents);
     }
 }
 
 
-function* removeEvent({eventId, userId}) {
+function* removeEvent({eventId}) {
     try {
-        const response = yield call(eventServiceObj.deleteEvent, eventId, userId);
+        const response = yield call(eventServiceObj.deleteEvent, eventId);
 
 
         yield put(batchActions([
@@ -132,9 +132,9 @@ function* addEventFlow() {
     }
 }
 
-function* getEventById({eventId, userId}) {
+function* getEventById({eventId}) {
     try {
-        const response = yield call(eventServiceObj.getEventById, eventId, userId);
+        const response = yield call(eventServiceObj.getEventById, eventId);
 
         const event = {
             ...response['event'],
@@ -161,9 +161,9 @@ function* getSingleEventFlow() {
     }
 }
 
-function* removeEventsByIds({eventIds, userId}) {
+function* removeEventsByIds({eventIds}) {
     try {
-        const response = yield call(eventServiceObj.deleteMultipleEvents, eventIds, userId);
+        const response = yield call(eventServiceObj.deleteMultipleEvents, eventIds);
 
         yield put(batchActions([
             eventsActions.setDeleteMultipleEventsSuccess({eventIds: eventIds}),

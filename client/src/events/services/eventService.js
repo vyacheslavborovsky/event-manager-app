@@ -19,24 +19,22 @@ export const eventServiceObj = {
         return httpServiceObj.httpRequest('/events', data);
     },
 
-    getEventById(eventId, userId) {
+    getEventById(eventId) {
         const data = {
             method: 'GET',
             headers: withAuthHeaders()
         };
 
-        const url = helperServiceObj.getUrlWithQueryParams(`/events/${eventId}`, {userId: userId});
-        return httpServiceObj.httpRequest(url, data);
+        return httpServiceObj.httpRequest(`/events/${eventId}`, data);
     },
 
-    getEvents(userId) {
+    getEvents() {
         const data = {
             method: 'GET',
             headers: withAuthHeaders()
         };
 
-        const url = helperServiceObj.getUrlWithQueryParams(`/events`, {userId: userId});
-        return httpServiceObj.httpRequest(url, data);
+        return httpServiceObj.httpRequest('/events', data);
     },
 
 
@@ -51,25 +49,23 @@ export const eventServiceObj = {
     },
 
 
-    deleteEvent(eventId, userId) {
+    deleteEvent(eventId) {
         const data = {
             method: "DELETE",
             headers: withAuthHeaders()
         };
 
-        const url = helperServiceObj.getUrlWithQueryParams(`/events/${eventId}`, {userId: userId});
-        return httpServiceObj.httpRequest(url, data);
+        return httpServiceObj.httpRequest(`/events/${eventId}`, data);
     },
 
-    deleteMultipleEvents(eventIds, userId) {
+    deleteMultipleEvents(eventIds) {
         const data = {
             method: "DELETE",
             headers: withAuthHeaders(),
             body: JSON.stringify({eventIds: eventIds})
         };
 
-        const url = helperServiceObj.getUrlWithQueryParams(`/events`, {userId: userId});
-        return httpServiceObj.httpRequest(url, data);
+        return httpServiceObj.httpRequest('/events', data);
     },
 
     getEmptyModalState() {

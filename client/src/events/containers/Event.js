@@ -6,7 +6,7 @@ import React, {PureComponent, Fragment} from 'react';
 import {Map, TileLayer, Marker, Popup} from 'react-leaflet';
 import {Card, CardText, CardTitle, DialogContainer} from "react-md";
 import {connect} from "react-redux";
-import {getDerivedEventData} from "../shared/eventSelector";
+import {getDerivedEventData} from "../utils/eventSelector";
 import {withRouter} from "react-router-dom";
 import {eventServiceObj} from "../services/eventService";
 
@@ -112,18 +112,13 @@ class Event extends PureComponent {
         }
     }
 
-    componentWillUnmount() {
-        //this.props.dispatch(eventsActions.resetRequestResults());
-    }
-
     handleSubmit = (values) => {
         const body = {
             title: values['title'].trim(),
             description: values['description'].trim(),
             allDayEvent: values['allDayEvent'],
             startDate: helperServiceObj.prepareEventDatesForSave('startDate', 'startTime', values),
-            endDate: helperServiceObj.prepareEventDatesForSave('endDate', 'endTime', values),
-            userId: this.props.userId
+            endDate: helperServiceObj.prepareEventDatesForSave('endDate', 'endTime', values)
         };
 
         if (values['locationName'] || this.state.locationSelected) {
@@ -272,7 +267,7 @@ class Event extends PureComponent {
 
 const mapStateToProps = () => (state, ownProps) => {
     const eventId = ownProps.match.params['eventId'];
-    return getDerivedEventData(eventId, state.eventsState, state.authState.sessionUser)(state, ownProps)
+    return getDerivedEventData(eventId, state.eventsState)(state, ownProps)
 };
 
 export default connect(mapStateToProps)(withRouter(Event));

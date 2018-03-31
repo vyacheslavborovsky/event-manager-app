@@ -2,7 +2,7 @@ import React from 'react';
 import {Field, reset, reduxForm} from "redux-form";
 import {
     renderField, signupFormValidate, signupFormWarn
-} from "../shared/user-forms.validators";
+} from "../utils/user-forms.validators";
 import {Button} from "react-md";
 import Loader from "../../common/components/Loader";
 import ringLoader from "../../assets/ring-loader.svg";

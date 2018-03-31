@@ -14,7 +14,7 @@ import eventsActions from "../actions/eventsActions";
 import lineLoader from '../../assets/line-loader.svg';
 import Loader from "../../common/components/Loader";
 import {eventServiceObj} from "../services/eventService";
-import {getMangeUIEventsData} from "../shared/eventSelector";
+import {getMangeUIEventsData} from "../utils/eventSelector";
 import {Redirect} from "react-router-dom";
 import {Scrollbars} from 'react-custom-scrollbars';
 import {storageServiceObj} from "../../common/services/storageService";
@@ -46,15 +46,14 @@ class ManageUI extends PureComponent {
 
     componentWillMount() {
         if (storageServiceObj.hasStorageValueByKey('token')) {
-            this.props.dispatch(eventsActions.setGetEventsRequesting({userId: this.props.authState.userId}));
+            this.props.dispatch(eventsActions.setGetEventsRequesting());
         }
     }
 
     deleteMultipleEvents = () => {
         const eventIds = this.props.eventsState.manageUI.completed.map(event => event.eventId);
         this.props.dispatch(eventsActions.setDeleteMultipleEventsRequesting({
-            eventIds: eventIds,
-            userId: this.props.authState.userId
+            eventIds: eventIds
         }));
     };
 
@@ -164,8 +163,7 @@ class ManageUI extends PureComponent {
 
     deleteEvent = () => {
         this.props.dispatch(eventsActions.setDeleteEventRequesting({
-            eventId: this.props.eventsState.selectedEvent.eventId,
-            userId: this.props.userId
+            eventId: this.props.eventsState.selectedEvent.eventId
         }));
 
         this.props.dispatch(eventsActions.setSelectedEvent(null));

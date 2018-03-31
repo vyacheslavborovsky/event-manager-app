@@ -5,7 +5,7 @@ import {
     eventFormValidate, renderEventDateField,
     renderEventTextField, renderEventTimeField,
     renderEventLocationField, renderRadioBoxField
-} from "../shared/events-form.validators";
+} from "../utils/events-form.validators";
 import {Button, ExpansionList, ExpansionPanel} from "react-md";
 import {connect} from "react-redux";
 

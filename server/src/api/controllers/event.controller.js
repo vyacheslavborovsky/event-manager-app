@@ -8,10 +8,9 @@ const Event = require('mongoose').model('Event');
 exports.getEvents = function (req, res) {
     const urlParams = url.parse(req.url, true).query;
     const sortParam = urlParams['sort'] || 'startDate';
-
-    if (urlParams['userId']) {
+    if (req.auth.id) {
         Event
-            .find({userId: urlParams['userId']})
+            .find({userId: req.auth.id})
             .sort(sortParam)
             .exec(function (err, events) {
                 if (err) {
@@ -29,35 +28,31 @@ exports.getEvents = function (req, res) {
 };
 
 exports.createEvent = function (req, res) {
-    try {
-        if (req.body['startDate'] === undefined || req.body['endDate'] === undefined) {
-            res.status(httpStatus.BAD_REQUEST);
-            return res.json({message: "Invalid request payload", success: false});
+    if (req.body['startDate'] === undefined || req.body['endDate'] === undefined) {
+        res.status(httpStatus.BAD_REQUEST);
+        return res.json({message: "Invalid request payload", success: false});
+    }
+
+    const newEvent = new Event({
+        title: req.body['title'],
+        description: req.body['description'],
+        startDate: new Date(req.body['startDate']),
+        endDate: new Date(req.body['endDate']),
+        allDayEvent: req.body['allDayEvent'] ? req.body['allDayEvent'] : false,
+        location: req.body['location'] ? req.body['location'] : null,
+        userId: req.auth.id
+    });
+
+    newEvent.save(function (err, event) {
+        if (err) {
+            console.log('Create Error ', err);
+            res.status(httpStatus.INTERNAL_SERVER_ERROR);
+            return res.json({message: "Error occurred during creating event."})
         }
 
-        const newEvent = new Event({
-            title: req.body['title'],
-            description: req.body['description'],
-            startDate: new Date(req.body['startDate']),
-            endDate: new Date(req.body['endDate']),
-            allDayEvent: req.body['allDayEvent'] ? req.body['allDayEvent'] : false,
-            location: req.body['location'] ? req.body['location'] : null,
-            userId: req.body['userId']
-        });
-
-        newEvent.save(function (err, event) {
-            if (err) {
-                console.log('Create Error ', err);
-                res.status(httpStatus.INTERNAL_SERVER_ERROR);
-                return res.json({message: "Error occurred during creating event."})
-            }
-
-            res.status(httpStatus.CREATED);
-            return res.json({message: "Event has been created successfully.", event: event});
-        });
-    } catch (err) {
-        console.log("Error: ", err);
-    }
+        res.status(httpStatus.CREATED);
+        return res.json({message: "Event has been created successfully.", event: event});
+    });
 };
 
 exports.updateEvent = function (req, res) {
@@ -95,12 +90,11 @@ exports.updateEvent = function (req, res) {
 
 exports.deleteEvent = function (req, res) {
     const eventId = req.params.eventId;
-    const urlParams = url.parse(req.url, true).query;
 
-    if (eventId && urlParams['userId']) {
+    if (eventId && req.auth.id) {
         Event.findOne({
             eventId: eventId,
-            userId: urlParams['userId']
+            userId: req.auth.id
         }, function (err, event) {
             if (err) {
                 res.status(httpStatus.INTERNAL_SERVER_ERROR);
@@ -119,23 +113,22 @@ exports.deleteEvent = function (req, res) {
                 }
 
                 res.status(httpStatus.OK);
-                return res.json({message: "Event has been deleted successfully.", event: event});
+                return res.json({message: "Event deleted successfully.", event: event});
             })
         })
     } else {
         res.status(httpStatus.BAD_REQUEST);
-        return res.json({message: 'Missing eventId in URL.'})
+        return res.json({message: 'No user found to delete event.'})
     }
 };
 
 exports.getEventById = function (req, res) {
     const eventId = req.params.eventId;
-    const urlParams = url.parse(req.url, true).query;
 
     if (eventId) {
         Event.findOne({
             eventId: eventId,
-            userId: urlParams['userId']
+            userId: req.auth.id
         }, function (err, event) {
             if (err) {
                 res.status(httpStatus.INTERNAL_SERVER_ERROR);
@@ -152,18 +145,17 @@ exports.getEventById = function (req, res) {
         })
     } else {
         res.status(httpStatus.BAD_REQUEST);
-        return res.json({message: "Missing eventId parameter in URL."})
+        return res.json({message: "No user found to get appropriate event."})
     }
 };
 
 exports.deleteMultipleEvents = function (req, res) {
     const eventIds = req.body['eventIds'];
-    const urlParams = url.parse(req.url, true).query;
 
-    if (eventIds && urlParams['userId'] && eventIds instanceof Array && eventIds.length > 0) {
+    if (eventIds && req.auth.id && eventIds instanceof Array && eventIds.length > 0) {
         Event.remove({
             eventId: {$in: eventIds},
-            userId: urlParams['userId']
+            userId: req.auth.id
         }, function (err) {
             if (err) {
                 console.log('Delete Multiple Error ', err);
@@ -206,7 +198,7 @@ exports.loadEventsDynamic = function (req, res) {
     const sortBy = urlParams['sort'] || 'startDate';
     const type = urlParams['type'] || 'upcoming';
 
-    if (urlParams['userId']) {
+    if (req.auth.id) {
         switch (type) {
             case 'upcoming': {
                 Event
@@ -257,7 +249,6 @@ exports.loadEventsDynamic = function (req, res) {
                 return res.json({message: 'Invalid events type passed to the server'});
             }
         }
-
     } else {
         res.status(httpStatus.UNAUTHORIZED);
         return res.json({message: 'No user found to get appropriate events.'});

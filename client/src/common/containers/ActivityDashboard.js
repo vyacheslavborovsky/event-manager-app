@@ -7,7 +7,7 @@ import {
 import commonActions from "../actions/commonActions";
 import Loader from "../components/Loader";
 import loader from '../../assets/earth-loader.svg';
-import {getDashboardData} from "../shared/dashboardSelector";
+import {getDashboardData} from "../utils/dashboardSelector";
 
 
 class ActivityDashboard extends PureComponent {

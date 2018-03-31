@@ -3,7 +3,7 @@ import {Field, reset, reduxForm} from "redux-form";
 import {
     loginFormValidate,
     renderField
-} from "../shared/user-forms.validators";
+} from "../utils/user-forms.validators";
 
 import ringLoader from '../../assets/ring-loader.svg';
 

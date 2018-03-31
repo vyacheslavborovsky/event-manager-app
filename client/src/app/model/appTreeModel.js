@@ -1,5 +1,5 @@
-import authState from '../../users/shared/authStateTree';
-import eventsState from '../../events/shared/eventsStateTree';
+import authState from '../../users/constant/authStateTree';
+import eventsState from '../../events/constant/eventsStateTree';
 import commonDefaultState from "../../common/constants/commonState";
 
 const appState = {

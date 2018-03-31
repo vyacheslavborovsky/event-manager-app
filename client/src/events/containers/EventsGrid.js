@@ -34,7 +34,7 @@ class EventsGrid extends PureComponent {
 
     componentWillMount() {
         if (storageServiceObj.hasStorageValueByKey('token')) {
-            this.props.dispatch(eventsActions.setGetEventsRequesting({userId: this.props.userId}));
+            this.props.dispatch(eventsActions.setGetEventsRequesting());
         }
     }
 
@@ -87,8 +87,7 @@ class EventsGrid extends PureComponent {
 
     deleteEvent = () => {
         this.props.dispatch(eventsActions.setDeleteEventRequesting({
-            eventId: this.props.eventsState.selectedEvent.eventId,
-            userId: this.props.userId
+            eventId: this.props.eventsState.selectedEvent.eventId
         }));
 
         this.props.dispatch(eventsActions.setSelectedEvent(null));
@@ -110,8 +109,7 @@ class EventsGrid extends PureComponent {
                 endDate: eventServiceObj.adjustDateRange(this.state.currentView, slotData.end),
                 title: "Default title",
                 description: "No description",
-                allDayEvent: false,
-                userId: this.props.userId
+                allDayEvent: false
             };
 
             this.setState({
@@ -120,10 +118,6 @@ class EventsGrid extends PureComponent {
 
             this.props.dispatch(eventsActions.setAddEventRequesting(body));
         }
-    };
-
-    onSelecting = (props) => {
-
     };
 
     resizeEvent = (resizeType, {event, end}) => {
@@ -178,7 +172,6 @@ class EventsGrid extends PureComponent {
                         onView={this.handleViewChange}
                         defaultDate={defaultDate}
                         onSelectEvent={this.onSelectEvent}
-                        onSelecting={this.onSelecting}
                         onSelectSlot={this.onSelectTimeRange}
                     />
                     <DialogContainer
@@ -210,7 +203,6 @@ class EventsGrid extends PureComponent {
 
 const mapStateToProps = (state) => {
     return {
-        userId: state.authState.sessionUser._id,
         isLoginSuccess: state.authState.isLoginSuccess,
         eventsState: state.eventsState,
         commonState: state.commonState

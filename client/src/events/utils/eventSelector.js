@@ -1,5 +1,5 @@
 import {createSelector} from 'reselect';
-import {defaultEventValues} from "./defaultEventValues";
+import {defaultEventValues} from "../constant/defaultEventValues";
 import moment from "moment";
 
 import * as _ from 'lodash';
@@ -7,7 +7,8 @@ import {helperServiceObj} from "../../common/services/helperService";
 
 export const getEvents = state => state.eventsState.data;
 
-export const getDerivedEventData = (eventId, eventsState, sessionUser) => createSelector(
+export const
+    getDerivedEventData = (eventId, eventsState) => createSelector(
     [getEvents],
     (events) => {
         const eventPageData = {
@@ -51,8 +52,7 @@ export const getDerivedEventData = (eventId, eventsState, sessionUser) => create
         }
 
         return {
-            eventsState: eventPageData,
-            userId: sessionUser._id,
+            eventsState: eventPageData
         }
     }
 );
@@ -82,7 +82,6 @@ export const getMangeUIEventsData = (eventsState, authState) => createSelector(
                 }
             },
             authState: {
-                userId: authState.sessionUser._id,
                 isLoginSuccess: authState.isLoginSuccess
             }
         }
