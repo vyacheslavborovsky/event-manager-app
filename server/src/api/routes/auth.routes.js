@@ -3,7 +3,6 @@ const passport = require("passport");
 const postTwit = require("../../config/twitter").postTwit;
 const {getOne, getCurrentUser }= require("../utils/common.utils");
 const {twitterRequestToken, twitterAuth } = require("../controllers/auth.controller");
-const {authenticate }= require("../middleware/auth.middleware");
 const {generateToken, sendToken} = require("../utils/jwt.utils");
 const {logIn, signUp} = require("../controllers/auth.controller");
 
@@ -32,6 +31,6 @@ router.route('/twitter')
     });
 
 router.route('/me')
-    .get(authenticate, getCurrentUser, getOne);
+    .get(getCurrentUser, getOne);
 
 module.exports = router;

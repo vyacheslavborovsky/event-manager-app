@@ -9,16 +9,15 @@ const {
 } = require("../controllers/event.controller");
 
 const router = express.Router();
-const {authenticate} = require("../middleware/auth.middleware");
 
 router.route('/')
-    .get(authenticate, getEvents)
-    .patch(authenticate, createEvent)
-    .delete(authenticate, deleteMultipleEvents);
+    .get(getEvents)
+    .patch(createEvent)
+    .delete(deleteMultipleEvents);
 
 router.route('/:eventId')
-    .get(authenticate, getEventById)
-    .post(authenticate, updateEvent)
-    .delete(authenticate, deleteEvent);
+    .get(getEventById)
+    .post(updateEvent)
+    .delete(deleteEvent);
 
 module.exports = router;

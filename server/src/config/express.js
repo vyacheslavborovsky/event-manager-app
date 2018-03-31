@@ -1,3 +1,4 @@
+const {authenticate} = require("../api/middleware/auth.middleware");
 const bodyParser = require('body-parser');
 const compress = require('compression');
 const path = require('path');
@@ -13,6 +14,8 @@ const session = require('express-session');
 const appRoutes = require('../api/routes');
 const initMongooseSession = require('./mongoose');
 const initAuthStrategies = require('./passport');
+const secretWord = 'my-super-power-secret';
+
 
 const app = express();
 
@@ -29,17 +32,18 @@ app.use(cors());
 app.use(compress());
 app.use(helmet());
 app.use(methodOverride());
-app.use(cookieParser('my-super-power-secret'));
+app.use(cookieParser(secretWord));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({
-    secret: 'my-super-power-secret',
+    secret: secretWord,
     resave: true,
     saveUninitialized: false
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use('/api/v1', authenticate.unless({path: [/^\/api\/v1\/auth\w*((?!\/me).)/]}));
 app.use('/api/v1', appRoutes);
 
 app.get('*', function(request, response) {
