@@ -80,7 +80,7 @@ function createEvent(req, res) {
     const saved = newEvent.save();
 
     saved
-        .then(function (err, event) {
+        .then(function (event) {
             res.status(httpStatus.CREATED);
             return res.json({message: "Event has been created successfully.", event: event});
         })
@@ -129,7 +129,7 @@ function updateEvent(req, res) {
         const updated = Event.findOneAndUpdate({eventId: eventId}, {$set: updateBody}, options).exec();
 
         updated
-            .then(function (err, event) {
+            .then(function (event) {
                 res.status(httpStatus.OK);
                 return res.json({message: "Event has been updated successfully", event: event});
             })
@@ -168,7 +168,7 @@ function deleteEvent(req, res) {
             .exec();
 
         found
-            .then(function (err, event) {
+            .then(function (event) {
                 if (!event) {
                     res.status(httpStatus.NOT_FOUND);
                     return res.json({message: 'Event not found for deleting.'})
@@ -177,7 +177,7 @@ function deleteEvent(req, res) {
                 const removed = event.remove();
 
                 removed
-                    .then(function (err, item) {
+                    .then(function (item) {
                         res.status(httpStatus.OK);
                         return res.json({message: "Event deleted successfully.", event: event});
                     })
@@ -221,7 +221,7 @@ function getEventById(req, res) {
             .exec();
 
         found
-            .then(function (err, event) {
+            .then(function (event) {
                 if (!event) {
                     res.status(httpStatus.NOT_FOUND);
                     return res.json({message: 'Your event not found.'})
