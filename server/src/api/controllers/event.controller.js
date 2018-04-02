@@ -5,7 +5,7 @@ const url = require('url');
 
 
 /**
- * Returns all events associated with current user
+ * Returns all events associated with a current user
  *
  * @function getEvents
  * @param {string} url - GET /api/v1/events
@@ -14,8 +14,8 @@ const url = require('url');
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
  *
- * @param {object} queryString
- * @param {string} queryString.sort
+ * @param {object} req.query
+ * @param {string} [req.query.sort=startDate]
  *
  * @param {number} res.status
  * @param {string} res.message
@@ -338,11 +338,11 @@ function getActivityData(req, res) {
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
 
- * @param {object} req.queryString
- * @param {number} req.queryString.page_size - print events per one page
- * @param {number} req.queryString.page_number - current page number
- * @param {string} req.queryString.sort - sort field
- * @param {string} req.queryString.type - type of events [upcoming, inProgress, completed]
+ * @param {object} req.query
+ * @param {number} req.query.page_size - print events per one page
+ * @param {number} req.query.page_number - current page number
+ * @param {string} req.query.sort - sort field
+ * @param {string} req.query.type - type of events [upcoming, inProgress, completed]
 
  *
  * @param {number} res.status
