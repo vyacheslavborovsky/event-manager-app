@@ -35,7 +35,7 @@ const createTweetObject = function (data) {
         createdDate: data.created_at,
         username: data.user.name,
         screenName: data.user.screen_name,
-        ACTION_TYPE: NEW_TWEET
+        ACTION_TYPE: 'NEW_TWEET'
     };
 };
 

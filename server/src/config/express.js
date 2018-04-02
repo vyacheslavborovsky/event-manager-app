@@ -13,7 +13,8 @@ const passport = require("passport");
 const session = require('express-session');
 const appRoutes = require('../api/routes');
 const initMongooseSession = require('./mongoose');
-const initAuthStrategies = require('./passport');
+const initPassportStrategies = require("./passport").initPassportStrategies;
+
 const secretWord = 'my-super-power-secret';
 
 
@@ -23,7 +24,7 @@ if (config.mode !== 'testing') {
     initMongooseSession.connect();
 }
 
-initAuthStrategies(passport);
+initPassportStrategies(passport);
 
 app.use(express.static(path.resolve(__dirname, '../../../client/build')));
 

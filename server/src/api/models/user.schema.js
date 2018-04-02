@@ -38,65 +38,44 @@ const UserSchema = new Schema({
 
 UserSchema.set('toJSON', {getters: true, virtuals: true});
 
-UserSchema.statics.insertTwitterData = function (req, token, tokenSecret, profile, callback) {
+UserSchema.statics.insertTwitterData = function (req, token, tokenSecret, profile) {
     const User = this;
 
-    if (!req.query.currentUserId) {
-        this.findOne({
-            'twitter.id': profile.id
-        }, function (err, user) {
-            if (!user) {
-                const newUser = new User({
-                    twitter: {
-                        id: profile['id'],
-                        token: token,
-                        tokenSecret: tokenSecret,
-                        username: profile['displayName'],
-                        name: profile['username'],
-                        avatarUrl: profile['photos'][0]['value'],
-                        email: profile['emails'][0]['value']
+    return new Promise(function (resolve, reject) {
+        if (req.query.currentUserId) {
+            const findQuery = User.findById(req.query.currentUserId).exec();
+
+            findQuery
+                .then(function (user) {
+                    if (user) {
+                        user.twitter = {
+                            id: profile['id'],
+                            token: token,
+                            tokenSecret: tokenSecret,
+                            username: profile['displayName'],
+                            name: profile['username'],
+                            avatarUrl: profile['photos'][0]['value'],
+                            email: profile['emails'][0]['value']
+                        };
+
+                        const saveQuery = user.save();
+
+                        saveQuery
+                            .then(function (user) {
+                                resolve(user);
+                            })
+                            .catch(function (error) {
+                                reject('Error during save twitter data: ', error);
+                            });
                     }
+                })
+                .catch(function (error) {
+                    reject('Error during find user: ', error);
                 });
-
-                newUser.save(function (error, user) {
-                    if (error) {
-                        console.log(error);
-                    }
-
-                    return callback(error, user);
-                });
-            } else {
-                return callback(null, user);
-            }
-        });
-    } else {
-        this.findById(req.query.currentUserId, function (err, user) {
-            if (err) {
-                return callback(null, user);
-            }
-
-            if (user) {
-                user.twitter = {
-                    id: profile['id'],
-                    token: token,
-                    tokenSecret: tokenSecret,
-                    username: profile['displayName'],
-                    name: profile['username'],
-                    avatarUrl: profile['photos'][0]['value'],
-                    email: profile['emails'][0]['value']
-                }
-            }
-
-            user.save(function (err, user) {
-                if (err) {
-                    throw err;
-                }
-
-                return callback(null, user);
-            })
-        });
-    }
+        } else {
+            reject('userId field is missing. Request has benn terminated.')
+        }
+    });
 };
-
 
 exports = mongoose.model('User', UserSchema);
