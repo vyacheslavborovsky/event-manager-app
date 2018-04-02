@@ -41,7 +41,7 @@ UserSchema.set('toJSON', {getters: true, virtuals: true});
 UserSchema.statics.insertTwitterData = function (req, token, tokenSecret, profile, callback) {
     const User = this;
 
-    if (!req.query['currentUserId']) {
+    if (!req.query.currentUserId) {
         this.findOne({
             'twitter.id': profile.id
         }, function (err, user) {
@@ -70,13 +70,13 @@ UserSchema.statics.insertTwitterData = function (req, token, tokenSecret, profil
             }
         });
     } else {
-        this.findById(req.query['currentUserId'], function (err, user) {
+        this.findById(req.query.currentUserId, function (err, user) {
             if (err) {
                 return callback(null, user);
             }
 
             if (user) {
-                user['twitter'] = {
+                user.twitter = {
                     id: profile['id'],
                     token: token,
                     tokenSecret: tokenSecret,

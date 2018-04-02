@@ -47,9 +47,9 @@ describe('TESTING AUTH FUNCTIONALITY', function () {
             .end(function (err, res) {
                 res.should.have.status(httpStatus.OK);
                 res.body.should.have.property('success');
-                res.body['success'].should.be.true;
+                res.body.success.should.be.true;
                 res.body.should.have.property('account');
-                res.body['account'].local.username.should.be.eql(mock.user.local.username);
+                res.body.account.local.username.should.be.eql(mock.user.local.username);
 
                 done();
             })
@@ -65,7 +65,7 @@ describe('TESTING AUTH FUNCTIONALITY', function () {
            .end(function (err, res) {
                res.should.have.status(httpStatus.OK);
                res.body.should.have.property('success');
-               res.body['success'].should.be.true;
+               res.body.success.should.be.true;
                res.body.should.have.property('x-auth-token');
                res.body['x-auth-token'].length.should.be.gt(0);
 

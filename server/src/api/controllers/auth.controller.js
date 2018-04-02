@@ -6,7 +6,7 @@ const {sendWelcomeMessage} = require("../utils/mailer");
 const {getSocketServer} = require('../../config/websocket');
 
 
-exports.signUp = (req, res, next) => {
+function signUp(req, res, next) {
     passport.authenticate('local-register', function (err, user, info) {
         if (err) {
             res.status(httpStatus.INTERNAL_SERVER_ERROR);
@@ -25,15 +25,15 @@ exports.signUp = (req, res, next) => {
             ACTION_TYPE: 'REGISTERED_USER',
             username: user.local.username
         };
-        
+
         wss.broadcast(payload);
 
         res.status(httpStatus.OK);
         return res.json({message: "Account has been created", success: true, account: user});
     })(req, res, next);
-};
+}
 
-exports.logIn = (req, res, next) => {
+function logIn(req, res, next) {
     passport.authenticate('local-login', function (err, user, info) {
         if (err) {
             res.status(httpStatus.INTERNAL_SERVER_ERROR);
@@ -49,10 +49,10 @@ exports.logIn = (req, res, next) => {
 
         return next();
     })(req, res, next);
-};
+}
 
-exports.twitterAuth = (req, res, next) => {
-    const params = req.query['userId'].split('?');
+function twitterAuth(req, res, next) {
+    const params = req.query.userId.split('?');
     const verifier = params[1].split('=')[1];
 
     request.post({
@@ -77,13 +77,13 @@ exports.twitterAuth = (req, res, next) => {
         req.body['oauth_token'] = parsedBody.oauth_token;
         req.body['oauth_token_secret'] = parsedBody.oauth_token_secret;
         req.body['user_id'] = parsedBody.user_id;
-        req.query['currentUserId'] = params[0];
+        req.query.currentUserId = params[0];
 
         next();
     });
-};
+}
 
-exports.twitterRequestToken = (req, res) => {
+function twitterRequestToken(req, res) {
     request.post({
         url: 'https://api.twitter.com/oauth/request_token',
         oauth: {
@@ -99,4 +99,9 @@ exports.twitterRequestToken = (req, res) => {
         const jsonStr = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
         res.send(JSON.parse(jsonStr));
     })
-};
+}
+
+exports.signUp = signUp;
+exports.logIn = logIn;
+exports.twitterAuth = twitterAuth;
+exports.twitterRequestToken = twitterRequestToken;

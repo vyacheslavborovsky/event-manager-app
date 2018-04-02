@@ -1,5 +1,4 @@
 const path = require('path');
-
 const mode = process.env.NODE_ENV.trim();
 
 if (mode !== 'production') {
@@ -11,29 +10,29 @@ if (mode !== 'production') {
 
 module.exports = {
     mode: mode,
-    appUrl: process.env['APP_URL'],
+    appUrl: process.env.APP_URL,
     common: {
         jwtSecret: 'secret-code',
-        port: process.env['PORT']
+        port: process.env.PORT
     },
     twitterProvider: {
-        consumerKey: process.env['TWITTER_CONSUMER_KEY'],
-        consumerSecret: process.env['TWITTER_CONSUMER_SECRET'],
-        accessTokenKey: process.env['TWITTER_ACCESS_TOKEN'],
-        accessTokenSecret: process.env['TWITTER_TOKEN_SECRET'],
-        callbackUrl: process.env['TWITTER_CALLBACK_URL'],
+        consumerKey: process.env.TWITTER_CONSUMER_KEY,
+        consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
+        accessTokenKey: process.env.TWITTER_ACCESS_TOKEN,
+        accessTokenSecret: process.env.TWITTER_TOKEN_SECRET,
+        callbackUrl: process.env.TWITTER_CALLBACK_URL,
         includeEmail: true
     },
     mailerProvider: {
-        service: process.env['MAILER_SERVICE'],
+        service: process.env.MAILER_SERVICE,
         auth: {
-            user: process.env['MAILER_AUTH_USER'],
-            pass: process.env['MAILER_AUTH_PASSWORD']
+            user: process.env.MAILER_AUTH_USER,
+            pass: process.env.MAILER_AUTH_PASSWORD
         }
     },
     mongo: {
-        uri: process.env['MONGO_URI'],
-        db: process.env['MONGO_DB'],
+        uri: process.env.MONGO_URI,
+        db: process.env.MONGO_DB,
     },
-    logs: /*mode === 'production' ? 'combined' :*/ 'dev',
+    logs: mode === 'production' ? 'combined' : 'dev',
 };

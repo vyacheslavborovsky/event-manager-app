@@ -2,17 +2,15 @@ const getSocketServer = require("../../config/websocket").getSocketServer;
 const {fork} = require('child_process');
 const notification = fork(__dirname + '/../services/notifications.js');
 
-let notificationTimer;
-
 const sendStartMessage = function () {
     notification.send('startJob');
 };
 
-exports.runNotificationJob = function () {
+function runNotificationJob() {
     const socketServer = getSocketServer();
 
     sendStartMessage();
-    notificationTimer = setInterval(sendStartMessage, 1000 * 60 * 15);
+    setInterval(sendStartMessage, 1000 * 60 * 15);
 
     notification.on('message', function ({message, payload, userId}) {
         switch (message) {
@@ -29,4 +27,6 @@ exports.runNotificationJob = function () {
                 console.log('Unknown message');
         }
     });
-};
+}
+
+exports.runNotificationJob = runNotificationJob;

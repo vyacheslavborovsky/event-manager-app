@@ -1,8 +1,7 @@
-const expressJwt = require('express-jwt');
-
 require('../models/user.schema');
-const User = require('mongoose').model('User');
 
+const User = require('mongoose').model('User');
+const expressJwt = require('express-jwt');
 const config = require("../../config/variable");
 
 const authenticate = expressJwt({

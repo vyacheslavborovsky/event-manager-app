@@ -1,7 +1,5 @@
 const httpStatus = require('http-status');
 const jwt = require("jsonwebtoken");
-
-
 const config = require("../../config/variable");
 
 
@@ -13,7 +11,6 @@ const createToken = function (user) {
             expiresIn: 60 * 120
         });
 };
-
 
 const generateToken = function (req, res, next) {
     req.token = createToken(req.user);

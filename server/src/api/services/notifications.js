@@ -23,7 +23,7 @@ startNotificationJob = function () {
                         const minutes = diff['_data']['minutes'];
                         const seconds = diff['_data']['seconds'];
 
-                        item['until'] = `${minutes} ${minutes > 1 ? 'minutes' : 'minute'} and ${seconds} ${seconds > 1 ? 'seconds' : 'second'}`;
+                        item.until = `${minutes} ${minutes > 1 ? 'minutes' : 'minute'} and ${seconds} ${seconds > 1 ? 'seconds' : 'second'}`;
 
                         return item;
                     });
@@ -33,17 +33,17 @@ startNotificationJob = function () {
                 events.forEach(event => {
                     const payload = {
                         ACTION_TYPE: 'UPCOMING_EVENT',
-                        title: event['title'],
-                        until: event['until']
+                        title: event.title,
+                        until: event.until
                     };
 
-                    process.send({message: 'Notify', payload: JSON.stringify(payload), userId: event['userId']['_id']});
+                    process.send({message: 'Notify', payload: JSON.stringify(payload), userId: event.userId._id});
                     emailsArray.push(sendNotificationMessage(
-                        event['userId']['local']['username'],
-                        event['userId']['local']['email'],
-                        event['eventId'],
-                        event['title'],
-                        event['until']
+                        event.userId.local.username,
+                        event.userId.local.email,
+                        event.eventId,
+                        event.title,
+                        event.until
                         )
                     );
                 });
@@ -63,7 +63,6 @@ startNotificationJob = function () {
 };
 
 process.on('message', function (message) {
-    console.log(message)
     initMongooseSession.connect();
 
     if (message === 'startJob') {

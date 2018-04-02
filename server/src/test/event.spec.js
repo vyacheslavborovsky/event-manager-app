@@ -54,31 +54,16 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
         requester
             .get('/api/v1/events')
             .set('x-auth-token', token)
-            .query({userId: user.id})
             .end(function (err, res) {
 
                 res.should.have.status(200);
-                res.body['events'].should.be.a('array');
-                res.body['events'].length.should.be.eql(3);
-                res.body['events'][0].title.should.be.eql('Event title 1');
+                res.body.events.should.be.a('array');
+                res.body.events.length.should.be.eql(3);
+                res.body.events[0].title.should.be.eql('Event title 1');
 
-                eventIds = res.body['events'].map(function (item) {
+                eventIds = res.body.events.map(function (item) {
                     return item.eventId;
                 });
-
-                done();
-            });
-    });
-
-    it('it should NOT GET events without passed usedId param', function (done) {
-        requester
-            .get('/api/v1/events')
-            .set('x-auth-token', token)
-            .end(function (err, res) {
-
-                res.should.have.status(httpStatus.UNAUTHORIZED);
-                res.body.should.not.have.property('events');
-                res.body['message'].should.be.eq('No user found to get appropriate events.');
 
                 done();
             });
@@ -90,8 +75,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
             let event = Object.assign(mock.newEvent, {
                 startDate: now.setHours(now.getHours() + 6),
-                endDate: now.setHours(now.getHours() + 12),
-                userId: user.id
+                endDate: now.setHours(now.getHours() + 12)
             });
 
             requester
@@ -102,8 +86,8 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
                     res.should.have.status(httpStatus.CREATED);
                     res.body.should.have.property('event');
                     res.body.should.have.property('message');
-                    res.body['event'].title.should.be.eql(event.title);
-                    res.body['message'].should.be.eql('Event has been created successfully.');
+                    res.body.event.title.should.be.eql(event.title);
+                    res.body.message.should.be.eql('Event has been created successfully.');
 
                     done();
                 })
@@ -113,8 +97,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
             let now = new Date();
 
             let event = Object.assign(mock.newEvent, {
-                startDate: now.setHours(now.getHours() + 6),
-                userId: user.id
+                startDate: now.setHours(now.getHours() + 6)
             });
 
             requester
@@ -124,11 +107,11 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
                 .end(function (err, res) {
                     res.should.have.status(httpStatus.BAD_REQUEST);
                     res.body.should.have.property('success');
-                    res.body['success'].should.be.false;
+                    res.body.success.should.be.false;
                 });
 
-            delete event['startDate'];
-            event['endDate'] = now;
+            delete event.startDate;
+            event.endDate = now;
 
             requester
                 .patch('/api/v1/events')
@@ -138,8 +121,8 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
                     res.should.have.status(httpStatus.BAD_REQUEST);
                     res.body.should.have.property('success');
                     res.body.should.have.property('message');
-                    res.body['success'].should.be.false;
-                    res.body['message'].should.be.eql('Invalid request payload');
+                    res.body.success.should.be.false;
+                    res.body.message.should.be.eql('Invalid request payload');
 
                     done();
                 })
@@ -151,8 +134,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
         let event = Object.assign(mock.newEvent, {
             startDate: now.setHours(now.getHours() + 6),
-            endDate: now.setHours(now.getHours() + 12),
-            userId: user.id
+            endDate: now.setHours(now.getHours() + 12)
         });
 
         new Event(event)
@@ -170,9 +152,9 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
                     .end(function (err, res) {
                         res.should.have.status(httpStatus.OK);
                         res.body.should.have.property('event');
-                        res.body['event'].title.should.be.eql('Updated Title');
-                        res.body['event'].description.should.be.eql('Updated Description');
-                        new Date(res.body['event'].endDate).getTime().should.be.eql(payload.endDate.getTime());
+                        res.body.event.title.should.be.eql('Updated Title');
+                        res.body.event.description.should.be.eql('Updated Description');
+                        new Date(res.body.event.endDate).getTime().should.be.eql(payload.endDate.getTime());
 
                         done();
                     })
@@ -186,8 +168,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
             let event = Object.assign(mock.newEvent, {
                 startDate: now.setHours(now.getHours() + 6),
-                endDate: now.setHours(now.getHours() + 12),
-                userId: user.id
+                endDate: now.setHours(now.getHours() + 12)
             });
 
             new Event(event)
@@ -195,11 +176,10 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
                     requester
                         .delete('/api/v1/events/' + newEvent.eventId)
                         .set('x-auth-token', token)
-                        .query({userId: user.id})
                         .end(function (err, res) {
                             res.should.have.status(httpStatus.OK);
                             res.body.should.have.property('event');
-                            res.body['event'].eventId.toString().should.be.eql(newEvent.eventId.toString());
+                            res.body.event.eventId.toString().should.be.eql(newEvent.eventId.toString());
 
                             done();
                         })
@@ -210,12 +190,11 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
             requester
                 .delete('/api/v1/events')
                 .set('x-auth-token', token)
-                .query({userId: user.id})
                 .send({eventIds: eventIds})
                 .end(function (err, res) {
                     res.should.have.status(httpStatus.OK);
                     res.body.should.have.property('message');
-                    res.body['message'].should.be.eql('Events has been deleted successfully.');
+                    res.body.message.should.be.eql('Events has been deleted successfully.');
 
                     done();
                 })

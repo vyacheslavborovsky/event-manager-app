@@ -28,7 +28,9 @@ initAuthStrategies(passport);
 app.use(express.static(path.resolve(__dirname, '../../../client/build')));
 
 app.use(morgan(config.logs));
-app.use(cors());
+app.use(cors({
+    origin: ['http://localhost:3000']
+}));
 app.use(compress());
 app.use(helmet());
 app.use(methodOverride());

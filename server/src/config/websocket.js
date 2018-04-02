@@ -4,7 +4,7 @@ const subscribeToTwitterStream = require("./twitter").subscribeToTwitterStream;
 
 let webSocketServer = null;
 
-exports.initWebSocket = function (server) {
+function initWebSocket(server) {
     webSocketServer = new WebSocket.Server({server});
 
     webSocketServer.broadcast = function (data) {
@@ -30,7 +30,7 @@ exports.initWebSocket = function (server) {
     }
 
     webSocketServer.on('connection', function (ws, req) {
-        const { query: { userId } } = url.parse(req.url, true);
+        const {query: {userId}} = url.parse(req.url, true);
         ws.id = userId;
         ws.on('pong', heartbeat);
 
@@ -58,8 +58,11 @@ exports.initWebSocket = function (server) {
             ws.ping(noop);
         });
     }, 30000);
-};
+}
 
-exports.getSocketServer = function () {
+function getSocketServer() {
     return webSocketServer;
-};
+}
+
+exports.initWebSocket = initWebSocket;
+exports.getSocketServer = getSocketServer;

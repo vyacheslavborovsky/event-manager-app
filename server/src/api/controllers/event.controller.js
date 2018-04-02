@@ -1,13 +1,13 @@
+require('../models/event.schema');
+const Event = require('mongoose').model('Event');
 const httpStatus = require('http-status');
 const url = require('url');
 
-require('../models/event.schema');
-const Event = require('mongoose').model('Event');
 
-
-exports.getEvents = function (req, res) {
+function getEvents(req, res) {
     const urlParams = url.parse(req.url, true).query;
     const sortParam = urlParams['sort'] || 'startDate';
+
     if (req.auth.id) {
         Event
             .find({userId: req.auth.id})
@@ -25,21 +25,21 @@ exports.getEvents = function (req, res) {
         res.status(httpStatus.UNAUTHORIZED);
         return res.json({message: 'No user found to get appropriate events.'});
     }
-};
+}
 
-exports.createEvent = function (req, res) {
-    if (req.body['startDate'] === undefined || req.body['endDate'] === undefined) {
+function createEvent(req, res) {
+    if (req.body.startDate === undefined || req.body.endDate === undefined) {
         res.status(httpStatus.BAD_REQUEST);
         return res.json({message: "Invalid request payload", success: false});
     }
 
     const newEvent = new Event({
-        title: req.body['title'],
-        description: req.body['description'],
-        startDate: new Date(req.body['startDate']),
-        endDate: new Date(req.body['endDate']),
-        allDayEvent: req.body['allDayEvent'] ? req.body['allDayEvent'] : false,
-        location: req.body['location'] ? req.body['location'] : null,
+        title: req.body.title,
+        description: req.body.description,
+        startDate: new Date(req.body.startDate),
+        endDate: new Date(req.body.endDate),
+        allDayEvent: req.body.allDayEvent ? req.body.allDayEvent : false,
+        location: req.body.location ? req.body.location : null,
         userId: req.auth.id
     });
 
@@ -53,9 +53,9 @@ exports.createEvent = function (req, res) {
         res.status(httpStatus.CREATED);
         return res.json({message: "Event has been created successfully.", event: event});
     });
-};
+}
 
-exports.updateEvent = function (req, res) {
+function updateEvent(req, res) {
     const eventId = req.params.eventId;
 
     if (eventId) {
@@ -86,9 +86,9 @@ exports.updateEvent = function (req, res) {
         res.status(httpStatus.BAD_REQUEST);
         return res.json({message: 'No eventId passed to the server'});
     }
-};
+}
 
-exports.deleteEvent = function (req, res) {
+function deleteEvent(req, res) {
     const eventId = req.params.eventId;
 
     if (eventId && req.auth.id) {
@@ -120,9 +120,9 @@ exports.deleteEvent = function (req, res) {
         res.status(httpStatus.BAD_REQUEST);
         return res.json({message: 'No user found to delete event.'})
     }
-};
+}
 
-exports.getEventById = function (req, res) {
+function getEventById(req, res) {
     const eventId = req.params.eventId;
 
     if (eventId) {
@@ -147,10 +147,10 @@ exports.getEventById = function (req, res) {
         res.status(httpStatus.BAD_REQUEST);
         return res.json({message: "No user found to get appropriate event."})
     }
-};
+}
 
-exports.deleteMultipleEvents = function (req, res) {
-    const eventIds = req.body['eventIds'];
+function deleteMultipleEvents(req, res) {
+    const eventIds = req.body.eventIds;
 
     if (eventIds && req.auth.id && eventIds instanceof Array && eventIds.length > 0) {
         Event.remove({
@@ -170,10 +170,9 @@ exports.deleteMultipleEvents = function (req, res) {
         res.status(httpStatus.BAD_REQUEST);
         return res.json({message: "Invalid request payload.", success: false});
     }
-};
+}
 
-
-exports.getActivityData = function (req, res) {
+function getActivityData(req, res) {
     try {
         Event.getUsersActivityData()
             .then(function (response) {
@@ -188,9 +187,9 @@ exports.getActivityData = function (req, res) {
     } catch (err) {
         console.log("Error: ", err);
     }
-};
+}
 
-exports.loadEventsDynamic = function (req, res) {
+function loadEventsDynamic(req, res) {
     const urlParams = url.parse(req.url, true).query;
 
     const pageSize = urlParams['page_size'] || '3';
@@ -253,4 +252,14 @@ exports.loadEventsDynamic = function (req, res) {
         res.status(httpStatus.UNAUTHORIZED);
         return res.json({message: 'No user found to get appropriate events.'});
     }
-};
+}
+
+
+exports.getEvents = getEvents;
+exports.createEvent = createEvent;
+exports.updateEvent = updateEvent;
+exports.deleteEvent = deleteEvent;
+exports.getEventById = getEventById;
+exports.deleteMultipleEvents = deleteMultipleEvents;
+exports.getActivityData = getActivityData;
+exports.loadEventsDynamic = loadEventsDynamic;

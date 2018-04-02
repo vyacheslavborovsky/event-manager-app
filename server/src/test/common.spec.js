@@ -39,7 +39,6 @@ describe('TESTING COMMON FUNCTIONALITY', function () {
                     })
                     .catch(function (error) {
                         console.log('Error: ', error);
-
                         done();
                     })
             });
@@ -52,10 +51,10 @@ describe('TESTING COMMON FUNCTIONALITY', function () {
             .end(function (err, res) {
                 res.should.have.status(httpStatus.OK);
                 res.body.should.have.property('data');
-                res.body['data'].should.be.a('array');
-                res.body['data'][0].username[0].should.be.eql(user.local.username);
-                res.body['data'][0].total.should.be.eql(3);
-                res.body['data'][0].upcoming.should.be.eql(res.body['data'][0].total);
+                res.body.data.should.be.a('array');
+                res.body.data[0].username[0].should.be.eql(user.local.username);
+                res.body.data[0].total.should.be.eql(3);
+                res.body.data[0].upcoming.should.be.eql(res.body.data[0].total);
 
                 done();
             })

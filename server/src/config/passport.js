@@ -38,7 +38,7 @@ module.exports = function (passport) {
                 local: {
                     username: username,
                     password: bcrypt.hashSync(password, 8),
-                    email: req.body['email']
+                    email: req.body.email
                 }
             });
 

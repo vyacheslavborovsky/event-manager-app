@@ -3,7 +3,7 @@ const config = require('../../config/variable');
 
 const transporter = mailer.createTransport(config.mailerProvider);
 
-exports.sendWelcomeMessage = function (username, toEmail, webSocketServer) {
+function sendWelcomeMessage(username, toEmail, webSocketServer) {
     const mailOptions = {
         from: 'vyacheslav.borovsky@gmail.com',
         to: toEmail,
@@ -31,9 +31,9 @@ exports.sendWelcomeMessage = function (username, toEmail, webSocketServer) {
         .catch(function (error) {
             console.log('Error', error)
         });
-};
+}
 
-exports.sendNotificationMessage = function (username, toEmail, eventId, title, until) {
+function sendNotificationMessage(username, toEmail, eventId, title, until) {
     const mailOptions = {
         from: 'vyacheslav.borovsky@gmail.com',
         to: toEmail,
@@ -53,9 +53,9 @@ exports.sendNotificationMessage = function (username, toEmail, eventId, title, u
     };
 
     return sendEmail(mailOptions)
-};
+}
 
-sendEmail = function (mailOptions) {
+const sendEmail = function (mailOptions) {
     return new Promise(function (resolve, reject) {
         transporter.sendMail(mailOptions, function (err) {
             if (err) {
@@ -66,3 +66,6 @@ sendEmail = function (mailOptions) {
         });
     })
 };
+
+exports.sendWelcomeMessage = sendWelcomeMessage;
+exports.sendNotificationMessage = sendNotificationMessage;

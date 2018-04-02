@@ -2,7 +2,7 @@ const globalConfig = require("../../config/variable");
 const bcrypt = require('bcryptjs');
 
 
-exports.initInMemoryDB = function (mongoose, User, Event, mockData, requester, done) {
+function initInMemoryDB(mongoose, User, Event, mockData, requester) {
     return new Promise(function (resolve, reject) {
         mongoose.connect(globalConfig.mongo.uri + globalConfig.mongo.db, {
             keepAlive: 1,
@@ -64,11 +64,14 @@ exports.initInMemoryDB = function (mongoose, User, Event, mockData, requester, d
             });
         });
     })
-};
+}
 
-exports.removeInMemoryCollections = function (mockgoose, done) {
+function removeInMemoryCollections(mockgoose, done) {
     mockgoose.helper.reset()
         .then(function () {
             done();
         })
-};
+}
+
+exports.initInMemoryDB = initInMemoryDB;
+exports.removeInMemoryCollections = removeInMemoryCollections;
