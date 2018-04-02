@@ -6,6 +6,9 @@ let webSocketServer = null;
 
 /**
  * Initialize an instance of WebSocket channel
+ *
+ * @function initWebSocket
+ *
  * @param {object} server - an instance of express server
  */
 function initWebSocket(server) {
@@ -66,6 +69,9 @@ function initWebSocket(server) {
 
 /**
  * Get instance of websocket server
+ *
+ * @function getSocketServer
+ *
  * @return {object} webSocketServer
  */
 function getSocketServer() {

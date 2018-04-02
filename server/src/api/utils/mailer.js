@@ -5,6 +5,9 @@ const transporter = mailer.createTransport(config.mailerProvider);
 
 /**
  * Send welcome message when user has been registered successfully
+ *
+ * @function sendWelcomeMessage
+ *
  * @param {string} username - registered username
  * @param {string} toEmail - user email address
  * @param {object} webSocketServer - WebSocket server instance
@@ -41,6 +44,9 @@ function sendWelcomeMessage(username, toEmail, webSocketServer) {
 
 /**
  * Send email to user about his upcoming event
+ *
+ * @function sendNotificationMessage
+ *
  * @param {string} username
  * @param {string} toEmail
  * @param {string} eventId
@@ -73,6 +79,9 @@ function sendNotificationMessage(username, toEmail, eventId, title, until) {
 
 /**
  * Util function to send email
+ *
+ * @function sendEmail
+ *
  * @param {object} mailOptions
  * @param {string} mailOptions.from
  * @param {string} mailOptions.to
@@ -82,7 +91,7 @@ function sendNotificationMessage(username, toEmail, eventId, title, until) {
  *
  * @return {Promise}
  */
-const sendEmail = function (mailOptions) {
+function sendEmail(mailOptions) {
     return new Promise(function (resolve, reject) {
         transporter.sendMail(mailOptions, function (err) {
             if (err) {
@@ -92,7 +101,7 @@ const sendEmail = function (mailOptions) {
             }
         });
     })
-};
+}
 
 exports.sendWelcomeMessage = sendWelcomeMessage;
 exports.sendNotificationMessage = sendNotificationMessage;

@@ -2,12 +2,20 @@ const getSocketServer = require("../../config/websocket").getSocketServer;
 const {fork} = require('child_process');
 const notification = fork(__dirname + '/../services/notifications.js');
 
-const sendStartMessage = function () {
+
+/**
+ * Send message to child process to start notification job
+ *
+ * @function sendStartMessage
+ */
+function sendStartMessage() {
     notification.send('startJob');
-};
+}
 
 /**
  * Execute in a background thread the task to notify users about their upcoming events
+ *
+ * @function runNotificationJob
  */
 function runNotificationJob() {
     const socketServer = getSocketServer();

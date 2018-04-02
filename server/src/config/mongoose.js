@@ -3,6 +3,14 @@ const Promise = require('bluebird');
 mongoose.Promise = Promise;
 const globalConfig = require('./variable');
 
+
+/**
+ * Establish connection with mongo database
+ *
+ * @function connect
+ *
+ * @return {object} connection - mongo connection instance
+ */
 function connect() {
     mongoose.connect(globalConfig.mongo.uri + globalConfig.mongo.db, {
         keepAlive: 1,

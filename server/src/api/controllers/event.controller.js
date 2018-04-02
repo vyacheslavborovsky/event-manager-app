@@ -6,10 +6,14 @@ const url = require('url');
 
 /**
  * Returns all events associated with current user
+ *
+ * @function getEvents
+ * @param {string} url - GET /api/v1/events
+ * @memberOf API Events Routes: Events
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
  *
- * @param {string} url - GET /api/v1/events
  * @param {object} queryString
  * @param {string} queryString.sort
  *
@@ -44,10 +48,13 @@ function getEvents(req, res) {
 
 /**
  * Create a new user's event
+ *
+ * @function createEvent
+ * @param {string} url - PATCH /api/v1/events
+ * @memberOf API Events Routes: Event
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
- *
- * @param {string} url - PATCH /api/v1/events
  *
  * @param {object} res.body
  * @param {string} res.body.title - Short title of the event
@@ -92,10 +99,13 @@ function createEvent(req, res) {
 
 /**
  * Update outdated info of the event
+ *
+ * @function updateEvent
+ * @param {string} url - POST /api/v1/events/:eventId
+ * @memberOf API Events Routes: Event
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
- *
- * @param {string} url - POST /api/v1/events/:eventId
  *
  * @param {object} res.body
  * @param {string} res.body.title - Short title of the event
@@ -145,10 +155,12 @@ function updateEvent(req, res) {
 
 /**
  * Delete event
+ * @function deleteEvent
+ * @param {string} url - DELETE /api/v1/events/:eventId
+ * @memberOf API Events Routes: Event
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
- *
- * @param {string} url - DELETE /api/v1/events/:eventId
  *
  * @param {object} req.params
  * @param {string} req.params.eventId
@@ -198,10 +210,13 @@ function deleteEvent(req, res) {
 
 /**
  * Fetch user's event
+ *
+ * @function getEventById
+ * @param {string} url - GET /api/v1/events/:eventId
+ * @memberOf API Events Routes: Event
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
- *
- * @param {string} url - GET /api/v1/events/:eventId
  *
  * @param {object} req.params
  * @param {string} req.params.eventId
@@ -243,10 +258,13 @@ function getEventById(req, res) {
 
 /**
  * Delete one or more events at once
+ *
+ * @function deleteMultipleEvents
+ * @param {string} url - DELETE /api/v1/events
+ * @memberOf API Events Routes: Events
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
- *
- * @param {string} url - DELETE /api/v1/events
  *
  * @param {object} res.body
  * @param {Array<string>} res.body.eventIds - ids of events for delete them from the database
@@ -281,10 +299,13 @@ function deleteMultipleEvents(req, res) {
 
 /**
  * Get all users current activity status
+ *
+ * @function getActivityData
+ * @param {string} url - GET /api/v1/common/activity
+ * @memberOf API Common Routes: Activity
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
- *
- * @param {string} url - GET /api/v1/common/activity
  *
  * @param {object} res.body
  * @param {Array<string>} res.body.eventIds - ids of events for delete them from the database
@@ -311,6 +332,9 @@ function getActivityData(req, res) {
 
 /**
  * GET events using lazy loading (not implemented yet)
+ *
+ * @function loadEventsDynamic
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
 

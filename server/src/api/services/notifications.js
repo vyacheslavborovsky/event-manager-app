@@ -8,6 +8,9 @@ const {sendNotificationMessage} = require("../utils/mailer");
 
 /**
  * Pull all upcoming in nearest 15 minutes events from the database and notify users via email and websocket channel
+ *
+ * @function startNotificationJob
+ *
  * @returns {Promise}
  */
 startNotificationJob = function () {

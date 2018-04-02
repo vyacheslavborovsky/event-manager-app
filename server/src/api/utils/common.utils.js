@@ -4,11 +4,21 @@ const httpStatus = require('http-status');
 const winston = require('winston');
 const config = require("../../config/variable");
 
+
+/**
+ * Find user object from database using auth data
+ *
+ * @function getCurrentUser
+ *
+ * @param {object} req - express self-generated http request object
+ * @param {object} res - express self-generated http response object
+ * @param {object} next - express self-generated method to pass request to the next handler in a queue
+ */
 function getCurrentUser(req, res, next) {
 
     User.findById(req.auth.id, function (err, user) {
         if (err || !user) {
-            res.status(404);
+            res.status(httpStatus.NOT_FOUND);
             return res.json({message: "could not get current user", success: false})
         } else {
             req.user = user;
@@ -17,11 +27,29 @@ function getCurrentUser(req, res, next) {
     });
 }
 
+/**
+ * Send user to the client
+ *
+ * @function getOne
+ *
+ * @param {object} req - express self-generated http request object
+ * @param {object} res - express self-generated http response object
+ */
 function getOne(req, res) {
     const user = req.user.toObject();
     res.json(user);
 }
 
+/**
+ * App errors handler middleware
+ *
+ * @function errorHandler
+ *
+ * @param {object} err - error object
+ * @param {object} req - express self-generated http request object
+ * @param {object} res - express self-generated http response object
+ * @param {object} next - express self-generated method to pass request to the next handler in a queue
+ */
 function errorHandler(err, req, res, next) {
     res.locals.message = err.message;
     res.locals.error = config.mode === 'development' ? err : {};

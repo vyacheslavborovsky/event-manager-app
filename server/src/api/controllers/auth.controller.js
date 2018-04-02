@@ -8,11 +8,14 @@ const {sendWelcomeMessage} = require("../utils/mailer");
 
 /**
  ** Check user's provided data and create a new user on success
+ *
+ * @function signUp
+ * @param {string} url - POST /api/v1/auth/register/local
+ * @memberOf API User Routes: Auth
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
  * @param {object} next - express self-generated method to pass request to the next handler in a queue
- *
- * @param {string} url - POST /api/v1/auth/register/local
  *
  * @param {object} res.body
  * @param {string} res.body.username
@@ -53,11 +56,14 @@ function signUp(req, res, next) {
 
 /**
  ** Check user's provided data and pass the request to provide a jwt token middleware
+ *
+ * @function logIn
+ * @param {string} url - POST /api/v1/auth/login/local
+ * @memberOf API User Routes: Auth
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
  * @param {object} next - express self-generated method to pass request to the next handler in a queue
- *
- * @param {string} url - POST /api/v1/auth/login/local
  *
  * @param {object} res.body
  * @param {string} res.body.username
@@ -83,11 +89,15 @@ function logIn(req, res, next) {
 
 /**
  ** Pass the request to twitter auth API to get access_token and pass it to passport twitter auth middleware to get user profile info
+ *
+ * @function twitterAuth
+ * @param {string} url - POST /api/v1/auth/twitter
+ * @memberOf API User Routes: Twitter Auth
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
  * @param {object} next - express self-generated method to pass request to the next handler in a queue
  *
- * @param {string} url - POST /api/v1/auth/twitter
  * @param {object} req.queryString
  * @param {string} req.queryString.userId
  * @param {string} req.queryString.oauth_token
@@ -135,10 +145,13 @@ function twitterAuth(req, res, next) {
 
 /**
  ** Pass the request to twitter auth API to create request_token
+ *
+ * @function twitterRequestToken
+ * @param {string} url - POST /api/v1/auth/twitter/reverse
+ * @memberOf API User Routes: Twitter Auth
+ *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
- *
- * @param {string} url - POST /api/v1/auth/twitter/reverse
  *
  * @param {number} res.status
  * @param {string} res.message
