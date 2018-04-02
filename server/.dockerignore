@@ -1,6 +1,7 @@
 .git
 .idea
 node_modules
+logs/**.*
 logs
 *.log
 npm-debug
