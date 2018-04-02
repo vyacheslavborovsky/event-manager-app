@@ -4,7 +4,6 @@ import React, {PureComponent} from 'react';
 import {Card, CardText, CardTitle} from "react-md";
 import {connect} from "react-redux";
 import {Redirect} from "react-router-dom";
-import appConfig from "../../common/constants/config";
 
 
 class Login extends PureComponent {

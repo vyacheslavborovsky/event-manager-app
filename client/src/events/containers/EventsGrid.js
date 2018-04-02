@@ -10,7 +10,6 @@ import TweetsBox from "../../common/containers/TweetsBox";
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop';
 import withRouter from "react-router-dom/es/withRouter";
 import {connect} from "react-redux";
-import {DialogContainer} from "react-md";
 import {eventServiceObj} from "../services/eventService";
 import {Redirect} from "react-router-dom";
 import {storageServiceObj} from "../../common/services/storageService";

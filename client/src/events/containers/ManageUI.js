@@ -6,7 +6,7 @@ import {
     TableBody,
     TableRow,
     TableColumn,
-    Card, CardTitle, CardText, TabsContainer, Tab, Tabs, CardActions, Button, DialogContainer
+    Card, CardTitle, CardText, TabsContainer, Tab, Tabs, CardActions, Button
 } from 'react-md';
 
 

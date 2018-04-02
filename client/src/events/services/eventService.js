@@ -2,7 +2,6 @@ import eventsActions from "../actions/eventsActions";
 import moment from "moment";
 import React from 'react';
 import {Button} from "react-md";
-import {helperServiceObj} from "../../common/services/helperService";
 import {httpServiceObj} from "../../common/services/httpService";
 import {withAuthHeaders} from "../../common/constants/defaultHeaders";
 

@@ -33,7 +33,7 @@ function* getEvents() {
 
 function* getEventsFlow() {
     while (true) {
-        const action = yield take(eventsActionTypes.GET_EVENTS_REQUESTING);
+        yield take(eventsActionTypes.GET_EVENTS_REQUESTING);
         yield call(getEvents);
     }
 }
