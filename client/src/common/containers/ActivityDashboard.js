@@ -110,7 +110,7 @@ class ActivityDashboard extends PureComponent {
                 </div>
 
                 <div className="col-6_xs-12_sm-12_md-10_lg-6_xlg-6 grid-center pie-chart">
-                    <p className="message info-message col-12">Your events rates:</p>
+                    <p className="message info-message col-12">My events rates:</p>
                     {rateData &&
                         <PieChart
                             width={800}

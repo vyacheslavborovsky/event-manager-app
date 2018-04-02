@@ -9,11 +9,15 @@ export const getDashboardData = () => createSelector(
     [getActivityData, getRequestFlag, getSessionUser],
     (activityData, commonRequestPending, user) => {
         const pageData = {
-            activityData: activityData,
             commonRequestPending: commonRequestPending
         };
 
         if (activityData && activityData.length > 0) {
+            pageData.activityData = activityData.map(item => item.username === user.local.username ? {
+                ...item,
+                username: 'me'
+            } : item);
+
             const sessionUserActivity = activityData.filter(item => item._id === user._id);
 
             if (sessionUserActivity && sessionUserActivity[0]) {
