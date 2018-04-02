@@ -1,11 +1,29 @@
+const config = require("../../config/variable");
 const httpStatus = require('http-status');
 const passport = require('passport');
 const request = require("request");
-const config = require("../../config/variable");
-const {sendWelcomeMessage} = require("../utils/mailer");
 const {getSocketServer} = require('../../config/websocket');
+const {sendWelcomeMessage} = require("../utils/mailer");
 
 
+/**
+ ** Check user's provided data and create a new user on success
+ * @param {object} req - express self-generated http request object
+ * @param {object} res - express self-generated http response object
+ * @param {object} next - express self-generated method to pass request to the next handler in a queue
+ *
+ * @param {string} url - POST /api/v1/auth/register/local
+ *
+ * @param {object} res.body
+ * @param {string} res.body.username
+ * @param {string} res.body.password
+ * @param {object} res.body.email
+ *
+ * @param {number} res.status
+ * @param {string} res.message
+ * @param {boolean} res.success
+ * @param {object} res.account
+ */
 function signUp(req, res, next) {
     passport.authenticate('local-register', function (err, user, info) {
         if (err) {
@@ -33,6 +51,18 @@ function signUp(req, res, next) {
     })(req, res, next);
 }
 
+/**
+ ** Check user's provided data and pass the request to provide a jwt token middleware
+ * @param {object} req - express self-generated http request object
+ * @param {object} res - express self-generated http response object
+ * @param {object} next - express self-generated method to pass request to the next handler in a queue
+ *
+ * @param {string} url - POST /api/v1/auth/login/local
+ *
+ * @param {object} res.body
+ * @param {string} res.body.username
+ * @param {string} res.body.password
+ */
 function logIn(req, res, next) {
     passport.authenticate('local-login', function (err, user, info) {
         if (err) {
@@ -51,6 +81,26 @@ function logIn(req, res, next) {
     })(req, res, next);
 }
 
+/**
+ ** Pass the request to twitter auth API to get access_token and pass it to passport twitter auth middleware to get user profile info
+ * @param {object} req - express self-generated http request object
+ * @param {object} res - express self-generated http response object
+ * @param {object} next - express self-generated method to pass request to the next handler in a queue
+ *
+ * @param {string} url - POST /api/v1/auth/twitter
+ * @param {object} req.queryString
+ * @param {string} req.queryString.userId
+ * @param {string} req.queryString.oauth_token
+ * @param {string} req.queryString.oauth_verifier
+ *
+ * @param {object} res.body
+ * @param {string} res.body.username
+ * @param {string} res.body.password
+ * @param {object} res.body.email
+ *
+ * @param {number} res.status
+ * @param {string} res.message
+ */
 function twitterAuth(req, res, next) {
     const params = req.query.userId.split('?');
     const verifier = params[1].split('=')[1];
@@ -83,6 +133,20 @@ function twitterAuth(req, res, next) {
     });
 }
 
+/**
+ ** Pass the request to twitter auth API to create request_token
+ * @param {object} req - express self-generated http request object
+ * @param {object} res - express self-generated http response object
+ *
+ * @param {string} url - POST /api/v1/auth/twitter/reverse
+ *
+ * @param {number} res.status
+ * @param {string} res.message
+ * @param {object} res.data
+ * @param {string} res.data.oauth_token
+ * @param {string} res.data.oauth_token_secret
+ * @param {string} res.data.user_id - twitter profile id
+ */
 function twitterRequestToken(req, res) {
     request.post({
         url: 'https://api.twitter.com/oauth/request_token',

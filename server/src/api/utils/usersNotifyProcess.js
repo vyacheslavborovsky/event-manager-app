@@ -6,6 +6,9 @@ const sendStartMessage = function () {
     notification.send('startJob');
 };
 
+/**
+ * Execute in a background thread the task to notify users about their upcoming events
+ */
 function runNotificationJob() {
     const socketServer = getSocketServer();
 

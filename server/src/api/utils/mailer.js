@@ -3,6 +3,12 @@ const config = require('../../config/variable');
 
 const transporter = mailer.createTransport(config.mailerProvider);
 
+/**
+ * Send welcome message when user has been registered successfully
+ * @param {string} username - registered username
+ * @param {string} toEmail - user email address
+ * @param {object} webSocketServer - WebSocket server instance
+ */
 function sendWelcomeMessage(username, toEmail, webSocketServer) {
     const mailOptions = {
         from: 'vyacheslav.borovsky@gmail.com',
@@ -33,6 +39,16 @@ function sendWelcomeMessage(username, toEmail, webSocketServer) {
         });
 }
 
+/**
+ * Send email to user about his upcoming event
+ * @param {string} username
+ * @param {string} toEmail
+ * @param {string} eventId
+ * @param {string} title
+ * @param {string} until
+ *
+ * @return {Promise}
+ */
 function sendNotificationMessage(username, toEmail, eventId, title, until) {
     const mailOptions = {
         from: 'vyacheslav.borovsky@gmail.com',
@@ -55,6 +71,17 @@ function sendNotificationMessage(username, toEmail, eventId, title, until) {
     return sendEmail(mailOptions)
 }
 
+/**
+ * Util function to send email
+ * @param {object} mailOptions
+ * @param {string} mailOptions.from
+ * @param {string} mailOptions.to
+ * @param {string} mailOptions.subject
+ * @param {string} mailOptions.text
+ * @param {string} mailOptions.html
+ *
+ * @return {Promise}
+ */
 const sendEmail = function (mailOptions) {
     return new Promise(function (resolve, reject) {
         transporter.sendMail(mailOptions, function (err) {

@@ -4,6 +4,10 @@ const subscribeToTwitterStream = require("./twitter").subscribeToTwitterStream;
 
 let webSocketServer = null;
 
+/**
+ * Initialize an instance of WebSocket channel
+ * @param {object} server - an instance of express server
+ */
 function initWebSocket(server) {
     webSocketServer = new WebSocket.Server({server});
 
@@ -60,6 +64,10 @@ function initWebSocket(server) {
     }, 30000);
 }
 
+/**
+ * Get instance of websocket server
+ * @return {object} webSocketServer
+ */
 function getSocketServer() {
     return webSocketServer;
 }

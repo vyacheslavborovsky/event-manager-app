@@ -4,6 +4,10 @@ const User = require('mongoose').model('User');
 const expressJwt = require('express-jwt');
 const config = require("../../config/variable");
 
+/**
+ * Middleware function to extract jwt token from incoming request
+ * @type {middleware}
+ */
 const authenticate = expressJwt({
     secret: config.common.jwtSecret,
     requestProperty: 'auth',

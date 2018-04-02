@@ -6,6 +6,10 @@ const moment = require('moment');
 const {sendNotificationMessage} = require("../utils/mailer");
 
 
+/**
+ * Pull all upcoming in nearest 15 minutes events from the database and notify users via email and websocket channel
+ * @returns {Promise}
+ */
 startNotificationJob = function () {
     console.log(`Notification Job has started at ${new Date().toLocaleString()}`);
     return new Promise(function (resolve, reject) {
