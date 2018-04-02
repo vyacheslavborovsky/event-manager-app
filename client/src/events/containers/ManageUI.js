@@ -22,6 +22,7 @@ import {storageServiceObj} from "../../common/services/storageService";
 import '../styles/events-ui.css';
 import EventInfoPanel from "../components/EventsInfoPanel";
 import withRouter from "react-router-dom/es/withRouter";
+import commonActions from "../../common/actions/commonActions";
 
 
 class ManageUI extends PureComponent {
@@ -30,8 +31,7 @@ class ManageUI extends PureComponent {
 
         this.state = {
             tabs: eventServiceObj.getTabsConfig(),
-            columns: eventServiceObj.getEventsColumnsConfig(),
-            modalState: eventServiceObj.getEmptyModalState()
+            columns: eventServiceObj.getEventsColumnsConfig()
         }
     }
 
@@ -156,9 +156,7 @@ class ManageUI extends PureComponent {
 
     showDeleteConfirmationDialog = () => {
         const dialogConfig = eventServiceObj.getDeleteConfirmationModalConfig(this.deleteEvent, this.closeDialog);
-        this.setState({
-            modalState: dialogConfig,
-        });
+        this.props.dispatch(commonActions.setModalState(dialogConfig));
     };
 
     deleteEvent = () => {
@@ -171,9 +169,7 @@ class ManageUI extends PureComponent {
     };
 
     closeDialog = () => {
-        this.setState({
-            modalState: eventServiceObj.getEmptyModalState()
-        })
+        this.props.dispatch(commonActions.setModalState(eventServiceObj.getEmptyModalState()));
     };
 
     setSelectedEvent = (event) => {
@@ -188,7 +184,6 @@ class ManageUI extends PureComponent {
     render() {
         const {isEventRequestPending, selectedEvent} = this.props.eventsState;
         const {completed} = this.props.eventsState.manageUI;
-        const {modalState} = this.state;
         const {from} = this.props.location.state || {from: {pathname: '/login'}};
 
         if (!this.props.authState.isLoginSuccess) {
@@ -224,7 +219,6 @@ class ManageUI extends PureComponent {
                                 {this.renderTabs()}
                             </Tabs>
                         </TabsContainer>
-
                         {selectedEvent &&
                         <EventInfoPanel
                             event={selectedEvent}
@@ -232,16 +226,6 @@ class ManageUI extends PureComponent {
                             editHandler={e => eventServiceObj.goToEditView(this.props.history, selectedEvent.eventId)}
                             closePanel={e => eventServiceObj.closeInfoPanel(this.props.dispatch)}
                         />}
-
-                        <DialogContainer
-                            id="modal"
-                            visible={modalState.isOpen}
-                            onHide={this.closeDialog}
-                            actions={modalState.actions}
-                            title={modalState.title}
-                            titleClassName={modalState.titleClassName}>
-                            {modalState.content}
-                        </DialogContainer>
                     </CardText>
                 </Card>
             )
@@ -251,7 +235,7 @@ class ManageUI extends PureComponent {
 }
 
 const mapStateToProps = () => (state, ownProps) => {
-    return getMangeUIEventsData(state.eventsState, state.authState)(state, ownProps)
+    return getMangeUIEventsData(state)(state, ownProps)
 };
 
 export default connect(mapStateToProps)(withRouter(ManageUI));

@@ -27,8 +27,7 @@ class EventsGrid extends PureComponent {
         super(props);
         this.state = {
             currentView: 'month',
-            defaultDate: new Date(),
-            modalState: eventServiceObj.getEmptyModalState()
+            defaultDate: new Date()
         };
     }
 
@@ -80,9 +79,7 @@ class EventsGrid extends PureComponent {
 
     showDeleteConfirmationDialog = () => {
         const dialogConfig = eventServiceObj.getDeleteConfirmationModalConfig(this.deleteEvent, this.closeDialog);
-        this.setState({
-            modalState: dialogConfig,
-        });
+        this.props.dispatch(commonActions.setModalState(dialogConfig));
     };
 
     deleteEvent = () => {
@@ -95,9 +92,7 @@ class EventsGrid extends PureComponent {
     };
 
     closeDialog = () => {
-        this.setState({
-            modalState: eventServiceObj.getEmptyModalState()
-        })
+        this.props.dispatch(commonActions.setModalState(eventServiceObj.getEmptyModalState()));
     };
 
     onSelectTimeRange = (slotData) => {
@@ -136,7 +131,7 @@ class EventsGrid extends PureComponent {
     render() {
         const {data, isEventRequestPending, selectedEvent, eventRequestMessage} = this.props.eventsState;
         const {tweets, showTweetsBox} = this.props.commonState;
-        const {defaultDate, currentView, modalState} = this.state;
+        const {defaultDate, currentView} = this.state;
 
         const {from} = this.props.location.state || {from: {pathname: '/login'}};
 
@@ -174,15 +169,6 @@ class EventsGrid extends PureComponent {
                         onSelectEvent={this.onSelectEvent}
                         onSelectSlot={this.onSelectTimeRange}
                     />
-                    <DialogContainer
-                        id="modal"
-                        visible={modalState.isOpen}
-                        onHide={this.closeDialog}
-                        actions={modalState.actions}
-                        title={modalState.title}
-                        titleClassName={modalState.titleClassName}>
-                        {modalState.content}
-                    </DialogContainer>
                     {selectedEvent &&
                     <EventInfoPanel
                         event={selectedEvent}

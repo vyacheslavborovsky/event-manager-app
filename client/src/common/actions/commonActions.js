@@ -16,7 +16,9 @@ export const commonActionTypes = {
     REGISTERED_USER: 'REGISTERED_USER',
 
     GET_USERS_ACTIVITY_REQUESTING: 'GET_USERS_ACTIVITY_REQUESTING',
-    GET_USERS_ACTIVITY_SUCCESS: 'GET_USERS_ACTIVITY_SUCCESS'
+    GET_USERS_ACTIVITY_SUCCESS: 'GET_USERS_ACTIVITY_SUCCESS',
+
+    SET_MODAL_STATE: 'SET_MODAL_STATE'
 };
 
 export default {
@@ -31,5 +33,7 @@ export default {
     setCloseWebSocket: createAction(commonActionTypes.CLOSE_WEB_SOCKET),
 
     setGetUsersActivityRequest: createAction(commonActionTypes.GET_USERS_ACTIVITY_REQUESTING),
-    setGetUsersActivitySuccess: createAction(commonActionTypes.GET_USERS_ACTIVITY_SUCCESS)
+    setGetUsersActivitySuccess: createAction(commonActionTypes.GET_USERS_ACTIVITY_SUCCESS),
+
+    setModalState: createAction(commonActionTypes.SET_MODAL_STATE)
 };

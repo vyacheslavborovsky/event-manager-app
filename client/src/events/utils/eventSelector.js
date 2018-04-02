@@ -57,15 +57,15 @@ export const
     }
 );
 
-export const getMangeUIEventsData = (eventsState, authState) => createSelector(
+export const getMangeUIEventsData = (state) => createSelector(
     [getEvents],
     (events) => {
         const pageData = {
-            ...eventsState,
+            ...state.eventsState,
         };
 
         const momentNow = moment(new Date());
-        const sortedEvents = _.orderBy(events, [eventsState.manageUI.sortColumn], [eventsState.manageUI.ascending ? 'asc' : 'desc']);
+        const sortedEvents = _.orderBy(events, [state.eventsState.manageUI.sortColumn], [state.eventsState.manageUI.ascending ? 'asc' : 'desc']);
 
         let completedEvents = sortedEvents.filter(event => moment(event.endDate).isBefore(momentNow));
         let upcomingEvents = sortedEvents.filter(event => moment(event.startDate).isAfter(momentNow));
@@ -82,7 +82,7 @@ export const getMangeUIEventsData = (eventsState, authState) => createSelector(
                 }
             },
             authState: {
-                isLoginSuccess: authState.isLoginSuccess
+                isLoginSuccess: state.authState.isLoginSuccess
             }
         }
     }

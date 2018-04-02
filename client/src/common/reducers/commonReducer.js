@@ -62,7 +62,12 @@ const commonReducer = handleActions({
             commonRequestPending: false,
             usersActivity: data
         }
-    }
+    },
+
+    [commonActionTypes.SET_MODAL_STATE]: (state, action) => ({
+        ...state,
+        modalState: action.payload
+    })
 }, defaultState);
 
 export default commonReducer;
