@@ -33,7 +33,7 @@ function* authorize(username, password) {
         yield put(authActions.setLoginFailure({isLoginSuccess: false, reason: error}));
     } finally {
         if (yield cancelled()) {
-            yield put(authActions.setLoginCancel({isLoginSuccess: false, reason: 'Login request has been canceled.'}));
+            yield put(authActions.setLoginCancel({isLoginSuccess: false, reason: 'Login request has been failed and canceled.'}));
         }
     }
 }

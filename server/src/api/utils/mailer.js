@@ -1,3 +1,7 @@
+/**
+ * @namespace MailUtils
+ */
+
 const mailer = require('nodemailer');
 const config = require('../../config/variable');
 
@@ -7,6 +11,7 @@ const transporter = mailer.createTransport(config.mailerProvider);
  * Send welcome message when user has been registered successfully
  *
  * @function sendWelcomeMessage
+ * @memberOf MailUtils
  *
  * @param {string} username - registered username
  * @param {string} toEmail - user email address
@@ -46,6 +51,7 @@ function sendWelcomeMessage(username, toEmail, webSocketServer) {
  * Send email to user about his upcoming event
  *
  * @function sendNotificationMessage
+ * @memberOf MailUtils
  *
  * @param {string} username
  * @param {string} toEmail
@@ -81,6 +87,7 @@ function sendNotificationMessage(username, toEmail, eventId, title, until) {
  * Util function to send email
  *
  * @function sendEmail
+ * @memberOf MailUtils
  *
  * @param {object} mailOptions
  * @param {string} mailOptions.from

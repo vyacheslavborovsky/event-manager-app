@@ -1,19 +1,19 @@
 const express = require('express');
 const passport = require("passport");
 const postTwit = require("../../config/twitter").postTwit;
-const {getOne, getCurrentUser }= require("../utils/common.utils");
-const {twitterRequestToken, twitterAuth } = require("../controllers/auth.controller");
 const {generateToken, sendToken} = require("../utils/jwt.utils");
+const {getOne, getCurrentUser }= require("../utils/common.utils");
 const {logIn, signUp} = require("../controllers/auth.controller");
+const {twitterRequestToken, twitterAuth } = require("../controllers/auth.controller");
 
 
 const router = express.Router();
 
 router.route('/register/local')
-    .post(signUp);
+    .post(passport.authenticate('local-register'), signUp);
 
 router.route('/login/local')
-    .post(logIn, generateToken, sendToken );
+    .post(passport.authenticate('local-login'), logIn, generateToken, sendToken );
 
 router.route('/twitter/reverse')
     .post(twitterRequestToken);

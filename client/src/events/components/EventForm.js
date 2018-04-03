@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {Field, reduxForm, formValueSelector} from "redux-form";
+import {Field, reduxForm, reset, formValueSelector} from "redux-form";
 import {
     eventFormValidate, renderEventDateField,
     renderEventTextField, renderEventTimeField,
@@ -20,7 +20,8 @@ let EventForm = (props) => {
                 updateTimeValues(value !== 'true');
                 break;
             }
-            default: break;
+            default:
+                break;
         }
     };
 
@@ -206,9 +207,12 @@ let EventForm = (props) => {
 
                     {!props.isEventRequestPending &&
                     <div className="grid-12-noGutter-spaceAround col-8">
-                        {props.isEventCreated && <h2 className="message success-message col-6">Event has been created.</h2>}
-                        {props.isEventUpdated && <h2 className="message info-message col-6">Event's data has been updated.</h2>}
-                        {!props.isEventUpdated || !props.isEventUpdated && <h2 className="message error-message col-6">{props.eventRequestMessage}</h2>}
+                        {props.isEventCreated &&
+                        <h2 className="message success-message col-6">Event has been created.</h2>}
+                        {props.isEventUpdated &&
+                        <h2 className="message info-message col-6">Event's data has been updated.</h2>}
+                        {!props.isEventUpdated || !props.isEventUpdated &&
+                        <h2 className="message error-message col-6">{props.eventRequestMessage}</h2>}
                         <Button
                             flat
                             primary
@@ -217,6 +221,12 @@ let EventForm = (props) => {
                         </Button>
                     </div>
                     }
+
+                    <Button
+                        flat
+                        className="col-2 md-text--theme-warning"
+                        onClick={e => props.dispatch(reset('event'))}
+                    >Reset</Button>
                 </div>
             </form>
         </div>

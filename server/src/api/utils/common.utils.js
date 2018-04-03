@@ -1,3 +1,7 @@
+/**
+ * @namespace CommonUtils
+ */
+
 require('../models/user.schema');
 const User = require('mongoose').model('User');
 const httpStatus = require('http-status');
@@ -9,6 +13,7 @@ const config = require("../../config/variable");
  * Find user object from database using auth data
  *
  * @function getCurrentUser
+ * @memberOf CommonUtils
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -31,6 +36,7 @@ function getCurrentUser(req, res, next) {
  * Send user to the client
  *
  * @function getOne
+ * @memberOf CommonUtils
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -44,6 +50,7 @@ function getOne(req, res) {
  * App errors handler middleware
  *
  * @function errorHandler
+ * @memberOf CommonUtils
  *
  * @param {object} err - error object
  * @param {object} req - express self-generated http request object

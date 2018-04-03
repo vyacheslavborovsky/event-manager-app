@@ -1,3 +1,7 @@
+/**
+ * @namespace Twitter
+ */
+
 const Twitter = require('twit');
 const config = require('./variable');
 
@@ -9,7 +13,14 @@ const myTwitter = new Twitter({
     timeout_ms: 60 * 1000 * 2
 });
 
-
+/**
+ * Create twitter stream and subscribe on it to receive new twits with tag 'javascript' and send to the client via websocket
+ *
+ * @function subscribeToTwitterStream
+ * @memberOf Twitter
+ *
+ * @param {object} webSocketServer
+ */
 function subscribeToTwitterStream(webSocketServer) {
     const twitterStream = myTwitter.stream('statuses/filter', {track: 'javascript'});
 
@@ -18,6 +29,14 @@ function subscribeToTwitterStream(webSocketServer) {
     });
 }
 
+/**
+ * Post a new twit in web
+ *
+ * @function postTwit
+ * @memberOf Twitter
+ *
+ * @param message
+ */
 function postTwit(message) {
     myTwitter.post('statuses/update', {status: message}, function (err, data, response) {
         if (err) {
@@ -28,7 +47,16 @@ function postTwit(message) {
     });
 }
 
-const createTweetObject = function (data) {
+/**
+ * Create object to send via websocket to the client
+ *
+ * @function createTweetObject
+ * @memberOf Twitter
+ *
+ * @param {object} data - twitter API response object
+ * @return {{id, text, createdDate: object, username: string, screenName: string, ACTION_TYPE: string}}
+ */
+function createTweetObject(data) {
     return {
         id: data.id,
         text: data.text,
@@ -37,7 +65,7 @@ const createTweetObject = function (data) {
         screenName: data.user.screen_name,
         ACTION_TYPE: 'NEW_TWEET'
     };
-};
+}
 
 exports.subscribeToTwitterStream = subscribeToTwitterStream;
 exports.postTwit = postTwit;

@@ -1,13 +1,17 @@
+/**
+ * @namespace Mongoose
+ */
+
 const mongoose = require('mongoose');
 const Promise = require('bluebird');
 mongoose.Promise = Promise;
 const globalConfig = require('./variable');
 
-
 /**
  * Establish connection with mongo database
  *
  * @function connect
+ * @memberOf Mongoose
  *
  * @return {object} connection - mongo connection instance
  */

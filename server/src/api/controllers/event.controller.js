@@ -1,3 +1,6 @@
+/**
+ * @namespace APIEventsRoutesHandlers
+ */
 require('../models/event.schema');
 const Event = require('mongoose').model('Event');
 const httpStatus = require('http-status');
@@ -9,7 +12,7 @@ const url = require('url');
  *
  * @function getEvents
  * @param {string} url - GET /api/v1/events
- * @memberOf API Events Routes: Events
+ * @memberOf APIEventsRoutesHandlers
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -51,7 +54,7 @@ function getEvents(req, res) {
  *
  * @function createEvent
  * @param {string} url - PATCH /api/v1/events
- * @memberOf API Events Routes: Event
+ * @memberOf APIEventsRoutesHandlers
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -102,7 +105,7 @@ function createEvent(req, res) {
  *
  * @function updateEvent
  * @param {string} url - POST /api/v1/events/:eventId
- * @memberOf API Events Routes: Event
+ * @memberOf APIEventsRoutesHandlers
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -157,7 +160,7 @@ function updateEvent(req, res) {
  * Delete event
  * @function deleteEvent
  * @param {string} url - DELETE /api/v1/events/:eventId
- * @memberOf API Events Routes: Event
+ * @memberOf APIEventsRoutesHandlers
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -213,7 +216,7 @@ function deleteEvent(req, res) {
  *
  * @function getEventById
  * @param {string} url - GET /api/v1/events/:eventId
- * @memberOf API Events Routes: Event
+ * @memberOf APIEventsRoutesHandlers
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -261,7 +264,7 @@ function getEventById(req, res) {
  *
  * @function deleteMultipleEvents
  * @param {string} url - DELETE /api/v1/events
- * @memberOf API Events Routes: Events
+ * @memberOf APIEventsRoutesHandlers
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -302,7 +305,7 @@ function deleteMultipleEvents(req, res) {
  *
  * @function getActivityData
  * @param {string} url - GET /api/v1/common/activity
- * @memberOf API Common Routes: Activity
+ * @memberOf APIEventsRoutesHandlers
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object

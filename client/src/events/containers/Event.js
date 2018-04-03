@@ -123,7 +123,7 @@ class Event extends PureComponent {
 
         if (values['locationName'] || this.state.locationSelected) {
             body['location'] = {};
-            body['location']['locationName'] = values['locationName'] || 'Default Name';
+            body['location']['locationName'] = values['locationName'] || 'Default Location';
 
             if (this.state.locationSelected) {
                 body['location']['lat'] = this.state.markerPosition.lat;

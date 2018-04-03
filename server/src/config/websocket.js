@@ -1,3 +1,7 @@
+/**
+ * @namespace WebSocket
+ */
+
 const WebSocket = require('ws');
 const url = require('url');
 const subscribeToTwitterStream = require("./twitter").subscribeToTwitterStream;
@@ -8,6 +12,7 @@ let webSocketServer = null;
  * Initialize an instance of WebSocket channel
  *
  * @function initWebSocket
+ * @memberOf WebSocket
  *
  * @param {object} server - an instance of express server
  */
@@ -68,9 +73,10 @@ function initWebSocket(server) {
 }
 
 /**
- * Get instance of websocket server
+ * Returns instance of websocket server
  *
  * @function getSocketServer
+ * @memberOf WebSocket
  *
  * @return {object} webSocketServer
  */

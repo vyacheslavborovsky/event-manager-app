@@ -1,6 +1,9 @@
+/**
+ * @namespace APIAuthRoutesHandlers
+ */
+
 const config = require("../../config/variable");
 const httpStatus = require('http-status');
-const passport = require('passport');
 const request = require("request");
 const {getSocketServer} = require('../../config/websocket');
 const {sendWelcomeMessage} = require("../utils/mailer");
@@ -11,11 +14,10 @@ const {sendWelcomeMessage} = require("../utils/mailer");
  *
  * @function signUp
  * @param {string} url - POST /api/v1/auth/register/local
- * @memberOf API User Routes: Auth
+ * @memberOf APIAuthRoutesHandlers
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
- * @param {object} next - express self-generated method to pass request to the next handler in a queue
  *
  * @param {object} res.body
  * @param {string} res.body.username
@@ -27,31 +29,24 @@ const {sendWelcomeMessage} = require("../utils/mailer");
  * @param {boolean} res.success
  * @param {object} res.account
  */
-function signUp(req, res, next) {
-    passport.authenticate('local-register', function (err, user, info) {
-        if (err) {
-            res.status(httpStatus.INTERNAL_SERVER_ERROR);
-            return res.json({message: 'An error occur', success: false});
-        }
+function signUp(req, res) {
+    if (!req.user) {
+        res.status(httpStatus.INTERNAL_SERVER_ERROR);
+        return res.json({message: "Error during register.", success: false});
+    }
 
-        if (!user) {
-            res.status(httpStatus.OK);
-            return res.json({message: info, success: false});
-        }
+    sendWelcomeMessage(user.local.username, user.local.email, getSocketServer());
+    const wss = getSocketServer();
 
-        sendWelcomeMessage(user.local.username, user.local.email, getSocketServer());
-        const wss = getSocketServer();
+    const payload = {
+        ACTION_TYPE: 'REGISTERED_USER',
+        username: user.local.username
+    };
 
-        const payload = {
-            ACTION_TYPE: 'REGISTERED_USER',
-            username: user.local.username
-        };
+    wss.broadcast(payload);
 
-        wss.broadcast(payload);
-
-        res.status(httpStatus.OK);
-        return res.json({message: "Account has been created", success: true, account: user});
-    })(req, res, next);
+    res.status(httpStatus.OK);
+    return res.json({message: "Account has been created", success: true, account: req.user});
 }
 
 /**
@@ -59,7 +54,8 @@ function signUp(req, res, next) {
  *
  * @function logIn
  * @param {string} url - POST /api/v1/auth/login/local
- * @memberOf API User Routes: Auth
+ * @memberOf APIAuthRoutesHandlers
+ *
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -70,21 +66,13 @@ function signUp(req, res, next) {
  * @param {string} res.body.password
  */
 function logIn(req, res, next) {
-    passport.authenticate('local-login', function (err, user, info) {
-        if (err) {
-            res.status(httpStatus.INTERNAL_SERVER_ERROR);
-            return res.json({message: 'Server error occur during login', success: false});
-        }
 
-        if (!user) {
-            res.status(httpStatus.OK);
-            return res.json({message: info, success: false});
-        }
-
-        req.user = user;
-
+    if (req.user) {
         return next();
-    })(req, res, next);
+    }
+
+    res.status(httpStatus.NOT_FOUND);
+    return res.json({message: "User not found.", success: false});
 }
 
 /**
@@ -92,7 +80,7 @@ function logIn(req, res, next) {
  *
  * @function twitterAuth
  * @param {string} url - POST /api/v1/auth/twitter
- * @memberOf API User Routes: Twitter Auth
+ * @memberOf APIAuthRoutesHandlers
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -148,7 +136,7 @@ function twitterAuth(req, res, next) {
  *
  * @function twitterRequestToken
  * @param {string} url - POST /api/v1/auth/twitter/reverse
- * @memberOf API User Routes: Twitter Auth
+ * @memberOf APIAuthRoutesHandlers
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object

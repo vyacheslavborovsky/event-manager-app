@@ -1,3 +1,7 @@
+/**
+ * @namespace JwtUtils
+ */
+
 const httpStatus = require('http-status');
 const jwt = require("jsonwebtoken");
 const config = require("../../config/variable");
@@ -6,6 +10,7 @@ const config = require("../../config/variable");
  * Create a new jwt token based on user id
  *
  * @function createToken
+ * @memberOf JwtUtils
  *
  * @param {object} user
  *
@@ -24,6 +29,7 @@ function createToken(user) {
  * Generate jwt token
  *
  * @function generateToken
+ * @memberOf JwtUtils
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
@@ -40,6 +46,7 @@ function generateToken(req, res, next) {
  * Send generated token to requested client
  *
  * @function sendToken
+ * @memberOf JwtUtils
  *
  * @param {object} req - express self-generated http request object
  * @param {object} res - express self-generated http response object
