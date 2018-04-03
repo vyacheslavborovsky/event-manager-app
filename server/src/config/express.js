@@ -5,7 +5,6 @@ const config = require('./variable');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const errorDomainMiddleware = require('express-domain-middleware');
-const errorHandler = require("../api/utils/common.utils").errorHandler;
 const express = require('express');
 const helmet = require('helmet');
 const initMongooseSession = require('./mongoose');
@@ -18,6 +17,8 @@ const RateLimit = require('express-rate-limit');
 const session = require('express-session');
 const winston = require('./winston');
 const {authenticate} = require("../api/middleware/auth.middleware");
+const csurf = require('csurf');
+const errorHandler = require("../api/middleware/common.middleware").errorHandler;
 
 const secretWord = 'my-super-power-secret';
 const authRateLimiter = new RateLimit({
@@ -43,6 +44,7 @@ app.use(express.static(path.resolve(__dirname, '../../../client/build')));
 app.use(compress());
 app.use(methodOverride());
 app.use(cookieParser(secretWord));
+app.use(csurf({cookie: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({secret: secretWord, resave: true, saveUninitialized: false}));
