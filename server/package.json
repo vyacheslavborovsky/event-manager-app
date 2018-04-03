@@ -30,6 +30,7 @@
     "express": "4.15.2",
     "express-domain-middleware": "0.1.0",
     "express-jwt": "5.3.0",
+    "express-rate-limit": "2.11.0",
     "express-session": "1.15.6",
     "helmet": "3.5.0",
     "http-status": "1.0.1",

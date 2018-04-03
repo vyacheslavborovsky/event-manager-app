@@ -4,6 +4,7 @@ const compress = require('compression');
 const config = require('./variable');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+const errorDomainMiddleware = require('express-domain-middleware');
 const errorHandler = require("../api/utils/common.utils").errorHandler;
 const express = require('express');
 const helmet = require('helmet');
@@ -13,13 +14,12 @@ const methodOverride = require('method-override');
 const morgan = require('morgan');
 const passport = require("passport");
 const path = require('path');
+const RateLimit = require('express-rate-limit');
 const session = require('express-session');
 const winston = require('./winston');
 const {authenticate} = require("../api/middleware/auth.middleware");
-const errorDomainMiddleware = require('express-domain-middleware');
 
 const secretWord = 'my-super-power-secret';
-
 
 const app = express();
 
@@ -54,6 +54,15 @@ app.use(errorDomainMiddleware);
 
 app.use('/api/v1', authenticate.unless({path: [/^\/api\/v1\/auth\w*((?!\/me).)/]}));
 app.use('/api/v1', appRoutes);
+
+const authRateLimiter = new RateLimit({
+    windowMs: 60 * 60 * 60,
+    delayAfter: 1,
+    delayMs: 3 * 1000,
+    max: 5,
+    message: 'There are too many auth requests from this IP address. Try again after 1 hour.'
+});
+app.use('/api/v1/auth', authRateLimiter);
 
 app.use(errorHandler);
 
