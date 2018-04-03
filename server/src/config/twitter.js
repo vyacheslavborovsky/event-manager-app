@@ -23,10 +23,8 @@ const myTwitter = new Twitter({
  */
 function subscribeToTwitterStream(webSocketServer) {
     const twitterStream = myTwitter.stream('statuses/filter', {track: 'javascript'});
-    console.log(config.twitterProvider);
 
     twitterStream.on('tweet', function (tweet) {
-        console.log('Twit ', tweet);
         webSocketServer.broadcast(createTweetObject(tweet))
     });
 }
