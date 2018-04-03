@@ -18,7 +18,7 @@ const session = require('express-session');
 const winston = require('./winston');
 const {authenticate} = require("../api/middleware/auth.middleware");
 const csurf = require('csurf');
-const errorHandler = require("../api/middleware/common.middleware").errorHandler;
+const errorHandler = require("../api/utils/common.utils").errorHandler;
 
 const secretWord = 'my-super-power-secret';
 const authRateLimiter = new RateLimit({
@@ -52,10 +52,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(errorDomainMiddleware);
 
+app.use('/api/v1/auth', authRateLimiter);
 app.use('/api/v1', authenticate.unless({path: [/^\/api\/v1\/auth\w*((?!\/me).)/]}));
 app.use('/api/v1', appRoutes);
-
-app.use('/api/v1/auth', authRateLimiter);
 
 app.use(errorHandler);
 
