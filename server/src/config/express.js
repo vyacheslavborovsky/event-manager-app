@@ -16,9 +16,8 @@ const path = require('path');
 const RateLimit = require('express-rate-limit');
 const session = require('express-session');
 const winston = require('./winston');
+const errorHandler = require("../api/middleware/common").errorHandler;
 const {authenticate} = require("../api/middleware/auth.middleware");
-const csurf = require('csurf');
-const errorHandler = require("../api/utils/common.utils").errorHandler;
 
 const secretWord = 'my-super-power-secret';
 const authRateLimiter = new RateLimit({
@@ -44,7 +43,6 @@ app.use(express.static(path.resolve(__dirname, '../../../client/build')));
 app.use(compress());
 app.use(methodOverride());
 app.use(cookieParser(secretWord));
-app.use(csurf({cookie: true}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({secret: secretWord, resave: true, saveUninitialized: false}));

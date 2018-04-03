@@ -26,7 +26,6 @@
     "cookie-parser": "1.4.3",
     "cors": "2.8.3",
     "cross-env": "5.0.1",
-    "csurf": "1.9.0",
     "dotenv-safe": "4.0.4",
     "express": "4.15.2",
     "express-domain-middleware": "0.1.0",
