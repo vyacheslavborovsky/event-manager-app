@@ -20,6 +20,13 @@ const winston = require('./winston');
 const {authenticate} = require("../api/middleware/auth.middleware");
 
 const secretWord = 'my-super-power-secret';
+const authRateLimiter = new RateLimit({
+    windowMs: 60 * 60 * 60,
+    delayAfter: 1,
+    delayMs: 3 * 1000,
+    max: 5,
+    message: 'There are too many auth requests from this IP address. Try again after 1 hour.'
+});
 
 const app = express();
 
@@ -29,39 +36,23 @@ if (config.mode !== 'testing') {
 
 initPassportStrategies(passport);
 
-app.use(express.static(path.resolve(__dirname, '../../../client/build')));
-
-app.use(morgan(config.logs, {stream: winston.stream}));
-app.use(cors({
-    origin: ['http://localhost:3000']
-}));
-app.use(compress());
 app.use(helmet());
+app.use(cors({origin: ['http://localhost:3000']}));
+app.use(morgan(config.logs, {stream: winston.stream}));
+app.use(express.static(path.resolve(__dirname, '../../../client/build')));
+app.use(compress());
 app.use(methodOverride());
 app.use(cookieParser(secretWord));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(session({
-    secret: secretWord,
-    resave: true,
-    saveUninitialized: false
-}));
+app.use(session({secret: secretWord, resave: true, saveUninitialized: false}));
 app.use(passport.initialize());
 app.use(passport.session());
-
-
 app.use(errorDomainMiddleware);
 
 app.use('/api/v1', authenticate.unless({path: [/^\/api\/v1\/auth\w*((?!\/me).)/]}));
 app.use('/api/v1', appRoutes);
 
-const authRateLimiter = new RateLimit({
-    windowMs: 60 * 60 * 60,
-    delayAfter: 1,
-    delayMs: 3 * 1000,
-    max: 5,
-    message: 'There are too many auth requests from this IP address. Try again after 1 hour.'
-});
 app.use('/api/v1/auth', authRateLimiter);
 
 app.use(errorHandler);
