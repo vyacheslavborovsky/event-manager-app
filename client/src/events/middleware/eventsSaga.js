@@ -13,6 +13,13 @@ function* getEvents() {
             item['startDate'] = new Date(item['startDate']);
             item['endDate'] = new Date(item['endDate']);
 
+            if (item.location && item.location.coordinates.length === 2) {
+                item.location.lng = item.location.coordinates[0];
+                item.location.lat = item.location.coordinates[1];
+
+                delete item.location.coordinates
+            }
+
             return item;
         });
 

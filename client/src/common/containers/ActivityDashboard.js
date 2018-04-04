@@ -107,6 +107,8 @@ class ActivityDashboard extends PureComponent {
                         <Line type='monotone' dataKey='total' stroke='#d88211'/>
                     </ComposedChart>
                     }
+
+                    {!activityData && <h3 className="message warning-message">No actual data to display.</h3>}
                 </div>
 
                 <div className="col-6_xs-12_sm-12_md-10_lg-6_xlg-6 grid-center pie-chart">

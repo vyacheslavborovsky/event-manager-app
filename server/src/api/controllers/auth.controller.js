@@ -185,8 +185,7 @@ function twitterRequestToken(req, res) {
  */
 
 function sendTwitterData(req, res) {
-    console.log(req.auth, req.user);
-    if (!req.user && !req.auth) {
+    if (!req.user) {
         return res.status(httpStatus.NOT_FOUND).json({message: 'User Not Authenticated'});
     }
 

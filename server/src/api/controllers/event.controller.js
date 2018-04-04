@@ -84,7 +84,10 @@ function createEvent(req, res) {
         startDate: new Date(req.body.startDate),
         endDate: new Date(req.body.endDate),
         allDayEvent: req.body.allDayEvent ? req.body.allDayEvent : false,
-        location: req.body.location ? req.body.location : null,
+        location: req.body.location ? {
+            locationName: req.body.location.locationName,
+            coordinates: [Number.parseFloat(req.body.location.lng), Number.parseFloat(req.body.location.lat)]
+        } : null,
         userId: req.auth.id
     });
 
@@ -132,9 +135,16 @@ function updateEvent(req, res) {
         for (let key in req.body) {
             if (req.body.hasOwnProperty(key)) {
                 if (key.indexOf('Date') !== -1) {
-                    updateBody[key] = new Date(req.body[key])
+                    updateBody[key] = new Date(req.body[key]);
                 } else {
-                    updateBody[key] = req.body[key]
+                    if (key === 'location') {
+                        updateBody[key] = {
+                            locationName: req.body.location.locationName,
+                            coordinates: [Number.parseFloat(req.body.location.lng), Number.parseFloat(req.body.location.lat)]
+                        }
+                    } else {
+                        updateBody[key] = req.body[key];
+                    }
                 }
             }
         }

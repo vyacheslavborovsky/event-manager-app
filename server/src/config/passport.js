@@ -15,7 +15,10 @@ const registerStrategy = new LocalStrategy({
     emailField: 'email',
     passReqToCallback: true
 }, function (req, username, password, done) {
-    const registerQuery = User.findOne({'local.username': username}).exec();
+    const registerQuery = User.findOne({$or: [
+        {'local.username': username},
+        {'local.email': req.body.email}
+    ]}).exec();
 
     registerQuery
         .then(function (user) {
@@ -40,7 +43,7 @@ const registerStrategy = new LocalStrategy({
                 return done({
                     status: httpStatus.OK,
                     success: false,
-                    message: "User with such username already exists."
+                    message: "User with such username/email already exists."
                 })
             }
         })

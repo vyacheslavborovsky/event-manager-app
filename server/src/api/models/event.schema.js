@@ -20,21 +20,9 @@ const EventSchema = new Schema({
         default: Date.now
     },
     location: {
-        type: {
-            locationName: {
-                type: String,
-                required: [true, 'Location name is missing']
-            },
-            lat: {
-                type: Number,
-                required: [true, 'Location latitude is missing']
-            },
-            lng: {
-                type: Number,
-                required: [true, 'Location longitude is missing']
-            }
-        },
-        required: false
+        locationName: {type: String},
+        type: {type: String, default: 'Point'},
+        coordinates: []
     },
     userId: {
         type: Schema.Types.ObjectId,
@@ -52,23 +40,22 @@ const EventSchema = new Schema({
 });
 
 EventSchema.pre('save', function (next) {
-    const now = new Date();
     if (!this.createdDate) {
-        this.createdDate = now;
+        this.createdDate = new date();
     }
 
     next();
 });
 
+EventSchema.index({"location": "2dsphere"});
+
 EventSchema.set('toJSON', {getters: true, virtuals: true});
 
 EventSchema.statics.getUpcomingEvents = function () {
-    const now = new Date();
-
     return this
         .find({
             startDate: {
-                $gt: now
+                $gt: new Date()
             }
         })
         .populate('userId')

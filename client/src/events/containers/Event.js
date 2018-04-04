@@ -123,18 +123,10 @@ class Event extends PureComponent {
 
         if (values['locationName'] || this.state.locationSelected) {
             body['location'] = {};
-            body['location']['locationName'] = values['locationName'] || 'Default Location';
+            body['location']['locationName'] = values['locationName'];
 
-            if (this.state.locationSelected) {
-                body['location']['lat'] = this.state.markerPosition.lat;
-                body['location']['lng'] = this.state.markerPosition.lng;
-            }
-        }
-
-        if (this.state.locationSelected) {
-            if (!body['location']) {
-                body['location'] = {};
-            }
+            body['location']['lat'] = this.state.markerPosition.lat;
+            body['location']['lng'] = this.state.markerPosition.lng;
         }
 
         if (this.props.eventsState.isEditingEvent) {
