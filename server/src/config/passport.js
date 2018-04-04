@@ -8,6 +8,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const TwitterTokenStrategy = require('passport-twitter-token');
 const httpStatus = require('http-status');
 const User = require('mongoose').model('User');
+const AppError = require('../api/utils/error');
 
 const registerStrategy = new LocalStrategy({
     usernameField: 'username',
@@ -15,13 +16,15 @@ const registerStrategy = new LocalStrategy({
     emailField: 'email',
     passReqToCallback: true
 }, function (req, username, password, done) {
-    const registerQuery = User.findOne({$or: [
-        {'local.username': username},
-        {'local.email': req.body.email}
-    ]}).exec();
+    const registerQuery = User.findOne({
+        $or: [
+            {'local.username': username},
+            {'local.email': req.body.email}
+        ]
+    }).exec();
 
     registerQuery
-        .then(function (user) {
+        .then(user => {
             if (!user) {
                 const newUser = new User({
                     local: {
@@ -33,23 +36,13 @@ const registerStrategy = new LocalStrategy({
 
                 newUser
                     .save()
-                    .then(function (newlyUser) {
-                        return done(null, newlyUser);
-                    })
-                    .catch(function (err) {
-                        return done(err);
-                    });
+                    .then(newlyUser => done(null, newlyUser))
+                    .catch(err => done(err));
             } else {
-                return done({
-                    status: httpStatus.OK,
-                    success: false,
-                    message: "User with such username/email already exists."
-                })
+                return Promise.reject(new AppError("User with such username/email already exists.", httpStatus.OK, true));
             }
         })
-        .catch(function (error) {
-            return done(error);
-        });
+        .catch(error => done(error));
 });
 
 const loginStrategy = new LocalStrategy({
@@ -60,28 +53,18 @@ const loginStrategy = new LocalStrategy({
     User
         .findOne({'local.username': username})
         .exec()
-        .then(function (user) {
+        .then(user => {
             if (user) {
                 if (!bcrypt.compareSync(password, user.local.password)) {
-                    return done({
-                        status: httpStatus.OK,
-                        success: false,
-                        message: "Password invalid. Try again, please."
-                    });
+                    return Promise.reject(new AppError("Password invalid. Try again, please.", httpStatus.OK, true));
                 }
 
                 return done(null, user);
             } else {
-                return done({
-                    status: httpStatus.OK,
-                    success: false,
-                    message: "Account not found. Please, check your credential."
-                })
+                return Promise.reject(new AppError("Account not found. Please, check your credential.", httpStatus.OK, true));
             }
         })
-        .catch(function (error) {
-            return done(error);
-        });
+        .catch(error => done(error));
 });
 
 const twitterAuthStrategy = new TwitterTokenStrategy({
@@ -92,12 +75,8 @@ const twitterAuthStrategy = new TwitterTokenStrategy({
     passReqToCallback: true
 }, function (req, token, tokenSecret, profile, done) {
     User.insertTwitterData(req, token, tokenSecret, profile)
-        .then(function (response) {
-            return done(null, response);
-        })
-        .catch(function (error) {
-            return done(error);
-        })
+        .then(response => done(null, response))
+        .catch(error => done(error));
 });
 
 /**
@@ -109,21 +88,14 @@ const twitterAuthStrategy = new TwitterTokenStrategy({
  * @param {object} passport
  */
 function initPassportStrategies(passport) {
-    passport.serializeUser(function (user, done) {
-        done(null, user.id);
-    });
+    passport.serializeUser((user, done) => done(null, user.id));
 
-    passport.deserializeUser(function (id) {
-        User
-            .findById(id)
-            .exec()
-            .then(function (user) {
-                done(null, user);
-            })
-            .catch(function (error) {
-                done(error)
-            })
-    });
+    passport.deserializeUser(id => User
+        .findById(id)
+        .exec()
+        .then(user => done(null, user))
+        .catch(error => done(error))
+    );
 
     passport.use('local-register', registerStrategy);
     passport.use('local-login', loginStrategy);

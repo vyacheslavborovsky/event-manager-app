@@ -2,7 +2,7 @@
  * @namespace Twitter
  */
 
-const Twitter = require('twit');
+const Twitter = require('promised-twit');
 const config = require('./variable');
 
 const myTwitter = new Twitter({
@@ -38,13 +38,14 @@ function subscribeToTwitterStream(webSocketServer) {
  * @param message
  */
 function postTwit(message) {
-    myTwitter.post('statuses/update', {status: message}, function (err, data, response) {
-        if (err) {
-            return {result: "An error occurred during posting the twit.", success: false}
-        } else {
-            return {success: true};
-        }
-    });
+    myTwitter
+        .postStatusesUpdate({status: message})
+        .then(data => {
+            return {success: true}
+        })
+        .catch(error => {
+            return {result: `An error occurred during posting the twit: ${error.message}`, success: false}
+        })
 }
 
 /**

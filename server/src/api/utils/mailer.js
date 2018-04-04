@@ -34,7 +34,7 @@ function sendWelcomeMessage(username, toEmail, webSocketServer) {
     };
 
     sendEmail(mailOptions)
-        .then(function (response) {
+        .then(response => {
             if (webSocketServer) {
                 webSocketServer.broadcast({
                     ACTION_TYPE: 'NEW_NOTIFICATION',
@@ -42,9 +42,7 @@ function sendWelcomeMessage(username, toEmail, webSocketServer) {
                 });
             }
         })
-        .catch(function (error) {
-            console.log('Error', error)
-        });
+        .catch(error => console.log('Error', error));
 }
 
 /**
@@ -100,9 +98,9 @@ function sendNotificationMessage(username, toEmail, eventId, title, until) {
  */
 function sendEmail(mailOptions) {
     return new Promise(function (resolve, reject) {
-        transporter.sendMail(mailOptions, function (err) {
-            if (err) {
-                reject({data: err});
+        transporter.sendMail(mailOptions, error => {
+            if (error) {
+                reject({data: error});
             } else {
                 resolve();
             }

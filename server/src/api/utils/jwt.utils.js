@@ -56,8 +56,7 @@ function generateToken(req, res, next) {
  * @param {boolean} res.success
  */
 function sendToken(req, res) {
-    res.status(httpStatus.OK);
-    return res.json({'x-auth-token': req.token, success: true});
+    return res.status(httpStatus.OK).json({'x-auth-token': req.token, success: true});
 }
 
 exports.generateToken = generateToken;

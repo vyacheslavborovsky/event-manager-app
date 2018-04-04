@@ -70,7 +70,6 @@ function signUp(req, res) {
  * @param {string} res.body.password
  */
 function logIn(req, res, next) {
-
     if (req.user) {
         return next();
     }
