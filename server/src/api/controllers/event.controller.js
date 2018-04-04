@@ -35,17 +35,18 @@ function getEvents(req, res) {
             .exec();
 
         findQuery
-            .then(function (events) {
-                res.status(200);
+            .then(events => {
+                res.status(httpStatus.OK);
                 return !events || events.length < 1 ? res.json({events: []}) : res.json({events: events});
             })
             .catch(function (error) {
-                res.status(500);
-                return res.json({message: "Error fetching events."})
+                res.status(httpStatus.INTERNAL_SERVER_ERROR);
+                return res.json({message: `Server errors during fetching events: ${error.message}`})
             })
     } else {
-        res.status(httpStatus.UNAUTHORIZED);
-        return res.json({message: 'No user found to get appropriate events.'});
+        return res
+            .status(httpStatus.UNAUTHORIZED)
+            .json({message: 'No user found to get appropriate events.'});
     }
 }
 
@@ -87,17 +88,17 @@ function createEvent(req, res) {
         userId: req.auth.id
     });
 
-    const saved = newEvent.save();
-
-    saved
-        .then(function (event) {
-            res.status(httpStatus.CREATED);
-            return res.json({message: "Event has been created successfully.", event: event});
-        })
-        .catch(function (error) {
-            res.status(httpStatus.INTERNAL_SERVER_ERROR);
-            return res.json({message: "Error occurred during creating event."})
-        })
+    newEvent
+        .save()
+        .then(event => res
+            .status(httpStatus.CREATED)
+            .json({
+                message: "Event has been created successfully.",
+                event: event
+            }))
+        .catch(error => res
+            .status(httpStatus.INTERNAL_SERVER_ERROR)
+            .json({message: `Server error during creating event: ${error.message}`}));
 }
 
 /**
@@ -139,20 +140,19 @@ function updateEvent(req, res) {
         }
 
         const options = {upsert: false, 'new': true};
-        const updated = Event.findOneAndUpdate({eventId: eventId}, {$set: updateBody}, options).exec();
 
-        updated
-            .then(function (event) {
-                res.status(httpStatus.OK);
-                return res.json({message: "Event has been updated successfully", event: event});
-            })
-            .catch(function (error) {
-                res.status(httpStatus.INTERNAL_SERVER_ERROR);
-                return res.json({message: "Error during updating event."})
-            })
+        Event
+            .findOneAndUpdate({eventId: eventId}, {$set: updateBody}, options)
+            .exec()
+            .then(event => res
+                .status(httpStatus.OK)
+                .json({
+                    message: "Event has been updated successfully",
+                    event: event
+                }))
+            .catch(error => res.status(httpStatus.INTERNAL_SERVER_ERROR).json({message: `Server error during updating event: ${error.message}`}));
     } else {
-        res.status(httpStatus.BAD_REQUEST);
-        return res.json({message: 'No eventId passed to the server'});
+        return res.status(httpStatus.BAD_REQUEST).json({message: 'No eventId passed to the server'});
     }
 }
 
@@ -176,38 +176,34 @@ function deleteEvent(req, res) {
     const eventId = req.params.eventId;
 
     if (eventId && req.auth.id) {
-        const found = Event.findOne({
+        Event.findOne({
             eventId: eventId,
             userId: req.auth.id
         })
-            .exec();
-
-        found
-            .then(function (event) {
-                if (!event) {
-                    res.status(httpStatus.NOT_FOUND);
-                    return res.json({message: 'Event not found for deleting.'})
+            .exec()
+            .then(event => {
+                if (event) {
+                    event
+                        .remove()
+                        .then(item => res
+                            .status(httpStatus.OK)
+                            .json({message: "Event deleted successfully.", event: item}))
+                        .catch(error => res
+                            .status(httpStatus.INTERNAL_SERVER_ERROR)
+                            .json({message: "Error occurred on the server."}));
+                } else {
+                    Promise.reject(new Error({
+                        message: 'Event not found for deleting.'
+                    }));
                 }
-
-                const removed = event.remove();
-
-                removed
-                    .then(function (item) {
-                        res.status(httpStatus.OK);
-                        return res.json({message: "Event deleted successfully.", event: event});
-                    })
-                    .catch(function (error) {
-                        res.status(httpStatus.INTERNAL_SERVER_ERROR);
-                        return res.json({message: "Error occurred on the server."})
-                    })
             })
-            .catch(function (error) {
-                res.status(httpStatus.INTERNAL_SERVER_ERROR);
-                return res.json({message: "Error occurred on the server."})
-            })
+            .catch(error => res
+                .status(httpStatus.INTERNAL_SERVER_ERROR)
+                .json({message: `Server error: ${error.message}`}));
     } else {
-        res.status(httpStatus.BAD_REQUEST);
-        return res.json({message: 'No user found to delete event.'})
+        return res
+            .status(httpStatus.BAD_REQUEST)
+            .json({message: 'No user found to delete event.'});
     }
 }
 
@@ -232,29 +228,29 @@ function getEventById(req, res) {
     const eventId = req.params.eventId;
 
     if (eventId) {
-        const found = Event.findOne({
+        Event.findOne({
             eventId: eventId,
             userId: req.auth.id
         })
-            .exec();
-
-        found
-            .then(function (event) {
-                if (!event) {
-                    res.status(httpStatus.NOT_FOUND);
-                    return res.json({message: 'Your event not found.'})
+            .exec()
+            .then(event => {
+                if (event) {
+                    return res
+                        .status(httpStatus.OK)
+                        .json({event: event});
+                } else {
+                    Promise.reject(new Error({
+                        message: 'Your event not found.'
+                    }));
                 }
-
-                res.status(httpStatus.OK);
-                return res.json({event: event});
             })
-            .catch(function (error) {
-                res.status(httpStatus.INTERNAL_SERVER_ERROR);
-                return res.json({message: "Error occurred on the server."})
-            })
+            .catch(error => res
+                .status(httpStatus.INTERNAL_SERVER_ERROR)
+                .json({message: `Server error: ${error.message}`}));
     } else {
-        res.status(httpStatus.BAD_REQUEST);
-        return res.json({message: "No user found to get appropriate event."})
+        return res
+            .status(httpStatus.BAD_REQUEST)
+            .json({message: "No user found to get appropriate event."})
     }
 }
 
@@ -280,23 +276,23 @@ function deleteMultipleEvents(req, res) {
     const eventIds = req.body.eventIds;
 
     if (eventIds && req.auth.id && eventIds instanceof Array && eventIds.length > 0) {
-        const removed = Event.remove({
+        Event.remove({
             eventId: {$in: eventIds},
             userId: req.auth.id
-        });
-
-        removed
-            .then(function (event) {
-                res.status(httpStatus.OK);
-                return res.json({message: "Events has been deleted successfully."});
-            })
-            .catch(function (error) {
-                res.status(httpStatus.INTERNAL_SERVER_ERROR);
-                return res.json({message: "Error occurred during deleting events."})
-            })
+        })
+            .then(event => res
+                .status(httpStatus.OK)
+                .json({
+                    message: "Events has been deleted successfully.",
+                    event: event
+                }))
+            .catch(error => res
+                .status(httpStatus.INTERNAL_SERVER_ERROR)
+                .json({message: `Server error during delete events: ${error.message}`, success: false}));
     } else {
-        res.status(httpStatus.BAD_REQUEST);
-        return res.json({message: "Invalid request payload.", success: false});
+        return res
+            .status(httpStatus.BAD_REQUEST)
+            .json({message: "Invalid request payload.", success: false});
     }
 }
 
@@ -323,14 +319,12 @@ function deleteMultipleEvents(req, res) {
  */
 function getActivityData(req, res) {
     Event.getUsersActivityData()
-        .then(function (response) {
-            res.status(httpStatus.OK);
-            return res.json({data: response});
-        })
-        .catch(function (err) {
-            res.status(httpStatus.INTERNAL_SERVER_ERROR);
-            return res.json({message: 'Server error occurred during fetching users activities.'});
-        })
+        .then(response => res
+            .status(httpStatus.OK)
+            .json({data: response}))
+        .catch(error => res
+            .status(httpStatus.INTERNAL_SERVER_ERROR)
+            .json({message: `Server error during get users activities: ${error.message}`}));
 }
 
 /**

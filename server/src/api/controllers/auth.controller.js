@@ -4,7 +4,7 @@
 
 const config = require("../../config/variable");
 const httpStatus = require('http-status');
-const request = require("request");
+const request = require("request-promise");
 const {getSocketServer} = require('../../config/websocket');
 const {sendWelcomeMessage} = require("../utils/mailer");
 
@@ -31,8 +31,9 @@ const {sendWelcomeMessage} = require("../utils/mailer");
  */
 function signUp(req, res) {
     if (!req.user) {
-        res.status(httpStatus.INTERNAL_SERVER_ERROR);
-        return res.json({message: "Error during register.", success: false});
+        return res
+            .status(httpStatus.INTERNAL_SERVER_ERROR)
+            .json({message: "Error during register.", success: false});
     }
 
     sendWelcomeMessage(user.local.username, user.local.email, getSocketServer());
@@ -45,8 +46,9 @@ function signUp(req, res) {
 
     wss.broadcast(payload);
 
-    res.status(httpStatus.OK);
-    return res.json({message: "Account has been created", success: true, account: req.user});
+    return res
+        .status(httpStatus.OK)
+        .json({message: "Account has been created", success: true, account: req.user});
 }
 
 /**
@@ -71,8 +73,9 @@ function logIn(req, res, next) {
         return next();
     }
 
-    res.status(httpStatus.NOT_FOUND);
-    return res.json({message: "User not found.", success: false});
+    return res
+        .status(httpStatus.NOT_FOUND)
+        .json({message: "User not found.", success: false});
 }
 
 /**
@@ -103,7 +106,8 @@ function twitterAuth(req, res, next) {
     const params = req.query.userId.split('?');
     const verifier = params[1].split('=')[1];
 
-    request.post({
+    request
+        .post({
         url: `https://api.twitter.com/oauth/access_token?oauth_verifier`,
         oauth: {
             consumer_key: config.twitterProvider.consumerKey,
@@ -113,22 +117,21 @@ function twitterAuth(req, res, next) {
         form: {
             oauth_verifier: verifier
         }
-    }, function (err, r, body) {
-        if (err) {
-            res.status(httpStatus.INTERNAL_SERVER_ERROR);
-            return res.json({message: err.message})
-        }
+    })
+        .then(body => {
+            const bodyString = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
+            const parsedBody = JSON.parse(bodyString);
 
-        const bodyString = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
-        const parsedBody = JSON.parse(bodyString);
+            req.body['oauth_token'] = parsedBody.oauth_token;
+            req.body['oauth_token_secret'] = parsedBody.oauth_token_secret;
+            req.body['user_id'] = parsedBody.user_id;
+            req.query.currentUserId = params[0];
 
-        req.body['oauth_token'] = parsedBody.oauth_token;
-        req.body['oauth_token_secret'] = parsedBody.oauth_token_secret;
-        req.body['user_id'] = parsedBody.user_id;
-        req.query.currentUserId = params[0];
-
-        next();
-    });
+            next();
+        })
+        .catch(error => res
+            .status(httpStatus.INTERNAL_SERVER_ERROR)
+            .json({message: err.message}));
 }
 
 /**
@@ -149,21 +152,20 @@ function twitterAuth(req, res, next) {
  * @param {string} res.data.user_id - twitter profile id
  */
 function twitterRequestToken(req, res) {
-    request.post({
-        url: 'https://api.twitter.com/oauth/request_token',
-        oauth: {
-            oauth_callback: config.twitterProvider.callbackUrl,
-            consumer_key: config.twitterProvider.consumerKey,
-            consumer_secret: config.twitterProvider.consumerSecret
-        }
-    }, function (err, r, body) {
-        if (err) {
-            return res.send(500, {message: err.message});
-        }
-
-        const jsonStr = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
-        res.send(JSON.parse(jsonStr));
-    })
+    request
+        .post({
+            url: 'https://api.twitter.com/oauth/request_token',
+            oauth: {
+                oauth_callback: config.twitterProvider.callbackUrl,
+                consumer_key: config.twitterProvider.consumerKey,
+                consumer_secret: config.twitterProvider.consumerSecret
+            }
+        })
+        .then(body => {
+            const jsonStr = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
+            res.send(JSON.parse(jsonStr));
+        })
+        .catch(error => res.send(500, {message: err.message}));
 }
 
 exports.signUp = signUp;
