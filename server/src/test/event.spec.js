@@ -31,15 +31,14 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
         mockgoose.prepareStorage()
             .then(function () {
                 initInMemoryDB(mongoose, User, Event, mock, requester)
-                    .then(function ({testUser, testToken}) {
+                    .then(({testUser, testToken}) => {
                         user = testUser;
                         token = testToken;
 
                         done();
                     })
-                    .catch(function (error) {
+                    .catch(error => {
                         console.log('Error: ', error);
-
                         done();
                     })
             });
@@ -138,7 +137,8 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
         });
 
         new Event(event)
-            .save(function (err, newEvent) {
+            .save()
+            .then(newEvent => {
                 const payload = {
                     title: 'Updated Title',
                     description: 'Updated Description',
@@ -158,7 +158,10 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
                         done();
                     })
-
+            })
+            .catch(error => {
+                console.log("Error: ", error);
+                done();
             })
     });
 
@@ -172,7 +175,8 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
             });
 
             new Event(event)
-                .save(function (err, newEvent) {
+                .save()
+                .then(newEvent => {
                     requester
                         .delete('/api/v1/events/' + newEvent.eventId)
                         .set('x-auth-token', token)
@@ -183,6 +187,10 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
                             done();
                         })
+                })
+                .catch(error => {
+                    console.log("Error: ", error);
+                    done();
                 })
         });
 

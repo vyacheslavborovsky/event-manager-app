@@ -30,7 +30,7 @@ describe('TESTING AUTH FUNCTIONALITY', function () {
         requester = chai.request(server);
 
         mockgoose.prepareStorage()
-            .then(function () {
+            .then(() => {
                 mongoose.connect(globalConfig.mongo.uri + globalConfig.mongo.db, {
                     keepAlive: 1,
                     useMongoClient: true,
@@ -56,21 +56,21 @@ describe('TESTING AUTH FUNCTIONALITY', function () {
     });
 
     it('User should be logged in', function (done) {
-       requester
-           .post('/api/v1/auth/login/local')
-           .send({
-               username: mock.user.local.username,
-               password: mock.user.local.password
-           })
-           .end(function (err, res) {
-               res.should.have.status(httpStatus.OK);
-               res.body.should.have.property('success');
-               res.body.success.should.be.true;
-               res.body.should.have.property('x-auth-token');
-               res.body['x-auth-token'].length.should.be.gt(0);
+        requester
+            .post('/api/v1/auth/login/local')
+            .send({
+                username: mock.user.local.username,
+                password: mock.user.local.password
+            })
+            .end(function (err, res) {
+                res.should.have.status(httpStatus.OK);
+                res.body.should.have.property('success');
+                res.body.success.should.be.true;
+                res.body.should.have.property('x-auth-token');
+                res.body['x-auth-token'].length.should.be.gt(0);
 
-               done();
-           })
+                done();
+            })
     });
 
     after(function (done) {

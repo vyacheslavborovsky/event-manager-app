@@ -29,15 +29,15 @@ describe('TESTING COMMON FUNCTIONALITY', function () {
         requester = chai.request(server);
 
         mockgoose.prepareStorage()
-            .then(function () {
+            .then(() => {
                 initInMemoryDB(mongoose, User, Event, mock, requester)
-                    .then(function ({testUser, testToken}) {
+                    .then(({testUser, testToken}) => {
                         user = testUser;
                         token = testToken;
 
                         done();
                     })
-                    .catch(function (error) {
+                    .catch(error => {
                         console.log('Error: ', error);
                         done();
                     })

@@ -54,27 +54,27 @@ const loginStrategy = new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, function (req, username, password, done) {
-    const loginQuery = User.findOne({'local.username': username}).exec();
-
-    loginQuery
+    User
+        .findOne({'local.username': username})
+        .exec()
         .then(function (user) {
-            if (!user) {
+            if (user) {
+                if (!bcrypt.compareSync(password, user.local.password)) {
+                    return done({
+                        status: httpStatus.OK,
+                        success: false,
+                        message: "Password invalid. Try again, please."
+                    });
+                }
+
+                return done(null, user);
+            } else {
                 return done({
                     status: httpStatus.OK,
                     success: false,
                     message: "Account not found. Please, check your credential."
                 })
             }
-
-            if (!bcrypt.compareSync(password, user.local.password)) {
-                return done({
-                    status: httpStatus.OK,
-                    success: false,
-                    message: "Password invalid. Try again, please."
-                });
-            }
-
-            return done(null, user);
         })
         .catch(function (error) {
             return done(error);

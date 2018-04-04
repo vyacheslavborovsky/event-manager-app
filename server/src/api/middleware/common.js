@@ -15,7 +15,6 @@ const httpStatus = require('http-status');
 function errorHandler(err, req, res, next) {
     res.locals.message = err.message;
     res.locals.error = config.mode === 'development' ? err : {};
-    console.log('Message: ', err.message);
 
     winston.error(`${err.status || 500} - ${err.message} - ${req.originalUrl} - ${req.method} - on domain: ${process.domain.id} - ${req.ip}`);
 

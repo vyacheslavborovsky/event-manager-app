@@ -1,9 +1,11 @@
 /**
  * @namespace APIAuthRoutesHandlers
  */
-
+require('../models/user.schema');
 const config = require("../../config/variable");
+const User = require('mongoose').model('User');
 const httpStatus = require('http-status');
+const postTwit = require("../../config/twitter").postTwit;
 const request = require("request-promise");
 const {getSocketServer} = require('../../config/websocket');
 const {sendWelcomeMessage} = require("../utils/mailer");
@@ -108,16 +110,16 @@ function twitterAuth(req, res, next) {
 
     request
         .post({
-        url: `https://api.twitter.com/oauth/access_token?oauth_verifier`,
-        oauth: {
-            consumer_key: config.twitterProvider.consumerKey,
-            consumer_secret: config.twitterProvider.consumerSecret,
-            token: req.query['oauth_token']
-        },
-        form: {
-            oauth_verifier: verifier
-        }
-    })
+            url: `https://api.twitter.com/oauth/access_token?oauth_verifier`,
+            oauth: {
+                consumer_key: config.twitterProvider.consumerKey,
+                consumer_secret: config.twitterProvider.consumerSecret,
+                token: req.query['oauth_token']
+            },
+            form: {
+                oauth_verifier: verifier
+            }
+        })
         .then(body => {
             const bodyString = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
             const parsedBody = JSON.parse(bodyString);
@@ -165,10 +167,70 @@ function twitterRequestToken(req, res) {
             const jsonStr = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
             res.send(JSON.parse(jsonStr));
         })
-        .catch(error => res.send(500, {message: err.message}));
+        .catch(error => res.send(500, {message: error.message}));
 }
 
-exports.signUp = signUp;
+/**
+ * Find user object from database using auth data
+ *
+ * @function getCurrentUser
+ * @param {string} url - POST /api/v1/twitter
+ * @memberOf APIAuthRoutesHandlers
+ *
+ * @param {object} req - express self-generated http request object
+ * @param {object} res - express self-generated http response object
+ *
+ * @param {number} res.status
+ * @param {object} res.user
+ */
+
+function sendTwitterData(req, res) {
+    console.log(req.auth, req.user);
+    if (!req.user && !req.auth) {
+        return res.status(httpStatus.NOT_FOUND).json({message: 'User Not Authenticated'});
+    }
+
+    postTwit(".@" + req.user.twitter.name + " has been registered in my event manager app.");
+    return res.status(httpStatus.OK).json({twitterData: req.user.twitter})
+}
+
+/**
+ * Find user object from database using auth data
+ *
+ * @function getCurrentUser
+ * @param {string} url - POST /api/v1/auth/me
+ * @memberOf APIAuthRoutesHandlers
+ *
+ * @param {object} req - express self-generated http request object
+ * @param {object} res - express self-generated http response object
+ *
+ * @param {number} res.status
+ * @param {object} res.user
+ * @param {boolean} res.success
+ * @param {string} res.message
+ */
+function getCurrentUser(req, res) {
+    User
+        .findById(req.auth.id)
+        .exec()
+        .then(user => {
+            if (user) {
+                return res.status(httpStatus.OK).json(user);
+            } else {
+                Promise.reject(new Error({
+                    message: `Couldn\'t find user with id ${req.auth.id}`
+                }))
+            }
+        })
+        .catch(error => res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
+            message: `Error on getting current user: ${error.message}`,
+            success: false
+        }));
+}
+
+exports.getCurrentUser = getCurrentUser;
+exports.sendTwitterData = sendTwitterData;
 exports.logIn = logIn;
+exports.signUp = signUp;
 exports.twitterAuth = twitterAuth;
 exports.twitterRequestToken = twitterRequestToken;

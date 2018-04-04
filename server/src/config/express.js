@@ -44,7 +44,6 @@ app.use(compress());
 app.use(methodOverride());
 app.use(cookieParser(secretWord));
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
 app.use(session({secret: secretWord, resave: true, saveUninitialized: false}));
 app.use(passport.initialize());
 app.use(passport.session());
