@@ -38,14 +38,7 @@ function subscribeToTwitterStream(webSocketServer) {
  * @param message
  */
 function postTwit(message) {
-    myTwitter
-        .postStatusesUpdate({status: message})
-        .then(data => {
-            return {success: true}
-        })
-        .catch(error => {
-            return {result: `An error occurred during posting the twit: ${error.message}`, success: false}
-        })
+    return myTwitter.postStatusesUpdate({status: message})
 }
 
 /**

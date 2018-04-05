@@ -16,14 +16,14 @@ const registerStrategy = new LocalStrategy({
     emailField: 'email',
     passReqToCallback: true
 }, function (req, username, password, done) {
-    const registerQuery = User.findOne({
+
+    User.findOne({
         $or: [
             {'local.username': username},
             {'local.email': req.body.email}
         ]
-    }).exec();
-
-    registerQuery
+    })
+        .exec()
         .then(user => {
             if (!user) {
                 const newUser = new User({
@@ -34,14 +34,12 @@ const registerStrategy = new LocalStrategy({
                     }
                 });
 
-                newUser
-                    .save()
-                    .then(newlyUser => done(null, newlyUser))
-                    .catch(err => done(err));
+                return newUser.save();
             } else {
                 return Promise.reject(new AppError("User with such username/email already exists.", httpStatus.OK, true));
             }
         })
+        .then(newlyUser => done(null, newlyUser))
         .catch(error => done(error));
 });
 

@@ -30,14 +30,11 @@ describe('TESTING AUTH FUNCTIONALITY', function () {
         requester = chai.request(server);
 
         mockgoose.prepareStorage()
-            .then(() => {
-                mongoose.connect(globalConfig.mongo.uri + globalConfig.mongo.db, {
-                    keepAlive: 1,
-                    useMongoClient: true,
-                }, function () {
-                    done();
-                })
-            });
+            .then(() => mongoose.connect(globalConfig.mongo.uri + globalConfig.mongo.db, {
+                keepAlive: 1,
+                useMongoClient: true,
+            }))
+            .then(() => done())
     });
 
     it('User should be registered', function (done) {
@@ -74,6 +71,7 @@ describe('TESTING AUTH FUNCTIONALITY', function () {
     });
 
     after(function (done) {
-        removeInMemoryCollections(mockgoose, done);
+        removeInMemoryCollections(mockgoose)
+            .then(() => done());
     });
 });

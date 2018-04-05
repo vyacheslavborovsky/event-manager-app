@@ -29,19 +29,17 @@ describe('TESTING COMMON FUNCTIONALITY', function () {
         requester = chai.request(server);
 
         mockgoose.prepareStorage()
-            .then(() => {
-                initInMemoryDB(mongoose, User, Event, mock, requester)
-                    .then(({testUser, testToken}) => {
-                        user = testUser;
-                        token = testToken;
+            .then(() => initInMemoryDB(mongoose, User, Event, mock, requester))
+            .then(({testUser, testToken}) => {
+                user = testUser;
+                token = testToken;
 
-                        done();
-                    })
-                    .catch(error => {
-                        console.log('Error: ', error);
-                        done();
-                    })
-            });
+                done();
+            })
+            .catch(error => {
+                console.log('Error: ', error);
+                done();
+            })
     });
 
     it('it should get users activities data', function (done) {
@@ -61,6 +59,7 @@ describe('TESTING COMMON FUNCTIONALITY', function () {
     });
 
     after(function (done) {
-        removeInMemoryCollections(mockgoose, done);
+        removeInMemoryCollections(mockgoose)
+            .then(() => done());
     });
 });

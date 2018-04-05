@@ -2,9 +2,10 @@
  * @namespace WebSocket
  */
 
-const WebSocket = require('ws');
-const url = require('url');
 const subscribeToTwitterStream = require("./twitter").subscribeToTwitterStream;
+const url = require('url');
+const WebSocket = require('ws');
+const winston = require('winston');
 
 let webSocketServer = null;
 
@@ -41,33 +42,29 @@ function initWebSocket(server) {
         this.isAlive = true;
     }
 
-    webSocketServer.on('connection', function (ws, req) {
-        const {query: {userId}} = url.parse(req.url, true);
-        ws.id = userId;
-        ws.on('pong', heartbeat);
-
-        ws.on('message', function (message) {
-            console.log(message);
-        });
-
-        ws.on('error', function (err) {
-            console.log('Error: ', err)
-        });
-
-        ws.on('close', function () {
-            console.log('close ws');
-        });
-    });
-
     function noop() {
     }
 
-    setInterval(function ping() {
-        webSocketServer.clients.forEach(function each(ws) {
-            if (ws.isAlive === false) return ws.terminate();
+    webSocketServer.on('connection', function (ws, req) {
+        const {query: {userId}} = url.parse(req.url, true);
+        ws.id = userId;
 
-            ws.isAlive = false;
-            ws.ping(noop);
+        ws.on('pong', heartbeat);
+
+        ws.on('message', message => winston.info(message));
+
+        ws.on('error', error => winston.error(`Error: ${error}`));
+
+        ws.on('close', () => winston.error('close ws'));
+    });
+
+
+    setInterval(() => {
+        webSocketServer.clients.forEach(wsClient => {
+            if (wsClient.isAlive === false) return wsClient.terminate();
+
+            wsClient.isAlive = false;
+            wsClient.ping(noop);
         });
     }, 30000);
 }

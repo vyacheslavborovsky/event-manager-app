@@ -3,6 +3,7 @@
  * @type {getSocketServer}
  */
 
+const winston = require("winston");
 const getSocketServer = require("../../config/websocket").getSocketServer;
 const {fork} = require('child_process');
 const notification = fork(__dirname + '/../services/notifications.js');
@@ -18,6 +19,37 @@ function sendStartMessage() {
     notification.send('startJob');
 }
 
+
+/**
+ * Handler for incoming messages from child process
+ * @function notificationHandler
+ * @memberOf Notification
+ *
+ * @param {string} message
+ * @param {object} payload
+ * @param {number} payload.sentMessages
+ * @param {number} payload.sentMessages
+ * @param {string} payload.ACTION_TYPE
+ * @param {string} payload.title
+ * @param {string} payload.untill
+ * @param {string} userId
+ */
+function notificationHandler({message, payload, userId}) {
+    switch (message) {
+        case 'Ended':
+            winston.info(`Notification Job has been finished at ${new Date().toLocaleString()} with ${payload.sentMessages} sent ${payload.sentMessages === 1 ? 'message' : 'messages'}`);
+            break;
+        case 'Error':
+            winston.info('Error during exec notification job');
+            break;
+        case 'Notify':
+            getSocketServer().setToParticularUser(userId, JSON.parse(payload));
+            break;
+        default:
+            winston.info(`Unknown incoming message: ${message}`);
+    }
+}
+
 /**
  * Execute in a background thread the task to notify users about their upcoming events
  *
@@ -25,26 +57,10 @@ function sendStartMessage() {
  * @memberOf Notification
  */
 function runNotificationJob() {
-    const socketServer = getSocketServer();
-
     sendStartMessage();
     setInterval(sendStartMessage, 1000 * 60 * 15);
 
-    notification.on('message', function ({message, payload, userId}) {
-        switch (message) {
-            case 'Ended':
-                console.log(`Notification Job has been finished at ${new Date().toLocaleString()} with ${payload} sent ${payload === 1 ? 'message' : 'messages'}`);
-                break;
-            case 'Error':
-                console.log('Error during exec notification job');
-                break;
-            case 'Notify':
-                socketServer.setToParticularUser(userId, JSON.parse(payload));
-                break;
-            default:
-                console.log('Unknown message');
-        }
-    });
+    notification.on('message', notificationHandler);
 }
 
 exports.runNotificationJob = runNotificationJob;

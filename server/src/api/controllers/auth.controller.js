@@ -2,11 +2,13 @@
  * @namespace APIAuthRoutesHandlers
  */
 require('../models/user.schema');
+const AppError = require('../../api/utils/error');
 const config = require("../../config/variable");
-const User = require('mongoose').model('User');
 const httpStatus = require('http-status');
 const postTwit = require("../../config/twitter").postTwit;
 const request = require("request-promise");
+const User = require('mongoose').model('User');
+const winston = require('winston');
 const {getSocketServer} = require('../../config/websocket');
 const {sendWelcomeMessage} = require("../utils/mailer");
 
@@ -128,11 +130,11 @@ function twitterAuth(req, res, next) {
             req.body['user_id'] = parsedBody.user_id;
             req.query.currentUserId = params[0];
 
-            next();
+            return next();
         })
         .catch(error => res
             .status(httpStatus.INTERNAL_SERVER_ERROR)
-            .json({message: err.message}));
+            .json({message: error.message}));
 }
 
 /**
@@ -164,7 +166,7 @@ function twitterRequestToken(req, res) {
         })
         .then(body => {
             const jsonStr = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
-            res.send(JSON.parse(jsonStr));
+            return res.send(JSON.parse(jsonStr));
         })
         .catch(error => res.send(500, {message: error.message}));
 }
@@ -185,11 +187,22 @@ function twitterRequestToken(req, res) {
 
 function sendTwitterData(req, res) {
     if (!req.user) {
-        return res.status(httpStatus.NOT_FOUND).json({message: 'User Not Authenticated'});
+        return res
+            .status(httpStatus.NOT_FOUND)
+            .json({message: 'User Not Authenticated'});
     }
 
-    postTwit(".@" + req.user.twitter.name + " has been registered in my event manager app.");
-    return res.status(httpStatus.OK).json({twitterData: req.user.twitter})
+    postTwit(".@" + req.user.twitter.name + " has been registered in my event manager app.")
+        .then(data => {
+            winston.info('Register twit has been posted.');
+        })
+        .catch(error => {
+            winston.error(`An error occurred during posting the twit: ${error.message}`);
+        });
+
+    return res
+        .status(httpStatus.OK)
+        .json({twitterData: req.user.twitter})
 }
 
 /**
@@ -215,15 +228,15 @@ function getCurrentUser(req, res) {
             if (user) {
                 return res.status(httpStatus.OK).json(user);
             } else {
-                Promise.reject(new Error({
-                    message: `Couldn\'t find user with id ${req.auth.id}`
-                }))
+                return Promise.reject(new AppError(`Couldn\'t find user with id ${req.auth.id}`, httpStatus.OK, true))
             }
         })
-        .catch(error => res.status(httpStatus.INTERNAL_SERVER_ERROR).json({
-            message: `Error on getting current user: ${error.message}`,
-            success: false
-        }));
+        .catch(error => res
+            .status(error.status || httpStatus.INTERNAL_SERVER_ERROR)
+            .json({
+                message: `Error on getting current user: ${error.message}`,
+                success: false
+            }));
 }
 
 exports.getCurrentUser = getCurrentUser;
