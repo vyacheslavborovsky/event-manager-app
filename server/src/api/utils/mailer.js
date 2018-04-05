@@ -2,10 +2,11 @@
  * @namespace MailUtils
  */
 
-const mailer = require('nodemailer');
 const config = require('../../config/variable');
+const mailer = require('nodemailer');
+const winston = require('winston');
 
-const transporter = mailer.createTransport(config.mailerProvider);
+let transporter = mailer.createTransport(config.mailerProvider);
 
 /**
  * Send welcome message when user has been registered successfully
@@ -15,10 +16,9 @@ const transporter = mailer.createTransport(config.mailerProvider);
  *
  * @param {string} username - registered username
  * @param {string} toEmail - user email address
- * @param {object} webSocketServer - WebSocket server instance
  */
-function sendWelcomeMessage(username, toEmail, webSocketServer) {
-    const mailOptions = {
+function sendWelcomeMessage(username, toEmail) {
+    let mailOptions = {
         from: 'vyacheslav.borovsky@gmail.com',
         to: toEmail,
         subject: 'Welcome to event manager app',
@@ -33,16 +33,7 @@ function sendWelcomeMessage(username, toEmail, webSocketServer) {
                 `
     };
 
-    sendEmail(mailOptions)
-        .then(response => {
-            if (webSocketServer) {
-                webSocketServer.broadcast({
-                    ACTION_TYPE: 'NEW_NOTIFICATION',
-                    message: `${username} has been joined the platform.`
-                });
-            }
-        })
-        .catch(error => console.log('Error', error));
+    return sendEmail(mailOptions);
 }
 
 /**
@@ -60,7 +51,7 @@ function sendWelcomeMessage(username, toEmail, webSocketServer) {
  * @return {Promise}
  */
 function sendNotificationMessage(username, toEmail, eventId, title, until) {
-    const mailOptions = {
+    let mailOptions = {
         from: 'vyacheslav.borovsky@gmail.com',
         to: toEmail,
         subject: `${title} upcoming`,
@@ -98,7 +89,7 @@ function sendNotificationMessage(username, toEmail, eventId, title, until) {
  */
 function sendEmail(mailOptions) {
     return new Promise(function (resolve, reject) {
-        transporter.sendMail(mailOptions, error => {
+        transporter.sendMail(mailOptions, (error) => {
             if (error) {
                 reject({data: error});
             } else {

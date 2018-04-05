@@ -13,7 +13,12 @@ module.exports = {
     appUrl: process.env.APP_URL,
     common: {
         jwtSecret: 'secret-code',
-        port: process.env.PORT
+        jwtExpire: 7200,
+        jwtHeader: 'config.common.jwtHeader',
+        notificationDelay: 900000,
+        expressSessionSecret: "my-super-power-secret",
+        port: process.env.PORT,
+        reactDevUri: process.env.REACT_LOCAL_URI
     },
     twitterProvider: {
         consumerKey: process.env.TWITTER_CONSUMER_KEY,
@@ -21,6 +26,9 @@ module.exports = {
         accessTokenKey: process.env.TWITTER_ACCESS_TOKEN,
         accessTokenSecret: process.env.TWITTER_TOKEN_SECRET,
         callbackUrl: process.env.TWITTER_CALLBACK_URL,
+        twitterAccessUrl: 'https://api.twitter.com/oauth/access_token?oauth_verifier',
+        twitterRequestUrl: 'https://api.twitter.com/oauth/request_token',
+        twitterTimeout: 120000,
         includeEmail: true
     },
     mailerProvider: {

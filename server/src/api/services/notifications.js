@@ -18,14 +18,14 @@ startNotificationJob = function () {
 
     return Event.getUpcomingEvents()
         .then(response => {
-            const now = new Date();
+            let now = new Date();
 
-            const events = response
-                .filter(item => {
+            let events = response
+                .filter((item) => {
                     const diff = moment.duration(moment(item.startDate).diff(moment(now)));
                     return item.userId && diff['_data']['hours'] === 0 && diff['_data']['days'] === 0 && diff['_data']['minutes'] <= 15;
                 })
-                .map(item => {
+                .map((item) => {
                     const diff = moment.duration(moment(item.startDate).diff(moment(now)));
                     const minutes = diff['_data']['minutes'];
                     const seconds = diff['_data']['seconds'];
@@ -35,9 +35,9 @@ startNotificationJob = function () {
                     return item;
                 });
 
-            const emailsArray = [];
+            let emailsArray = [];
 
-            events.forEach(event => {
+            events.forEach((event) => {
                 const payload = {
                     ACTION_TYPE: 'UPCOMING_EVENT',
                     title: event.title,
@@ -71,8 +71,12 @@ function messagesHandler(message) {
 
     if (message === 'startJob') {
         startNotificationJob()
-            .then(response => process.send({message: 'Ended', payload: {sentMessages: response.length}}))
-            .catch(error => process.send({message: 'Error'}))
+            .then((response) => {
+                process.send({message: 'Ended', payload: {sentMessages: response.length}})
+            })
+            .catch((error) => {
+                process.send({message: 'Error'})
+            });
     }
 }
 

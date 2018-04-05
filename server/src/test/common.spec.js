@@ -29,14 +29,16 @@ describe('TESTING COMMON FUNCTIONALITY', function () {
         requester = chai.request(server);
 
         mockgoose.prepareStorage()
-            .then(() => initInMemoryDB(mongoose, User, Event, mock, requester))
+            .then(() => {
+                return initInMemoryDB(mongoose, User, Event, mock, requester)
+            })
             .then(({testUser, testToken}) => {
                 user = testUser;
                 token = testToken;
 
                 done();
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log('Error: ', error);
                 done();
             })
@@ -45,7 +47,7 @@ describe('TESTING COMMON FUNCTIONALITY', function () {
     it('it should get users activities data', function (done) {
         requester
             .get('/api/v1/common/activity')
-            .set('x-auth-token', token)
+            .set('config.common.jwtHeader', token)
             .end(function (err, res) {
                 res.should.have.status(httpStatus.OK);
                 res.body.should.have.property('data');
@@ -58,7 +60,7 @@ describe('TESTING COMMON FUNCTIONALITY', function () {
             })
     });
 
-    after(function (done) {
+    after((done) => {
         removeInMemoryCollections(mockgoose)
             .then(() => done());
     });

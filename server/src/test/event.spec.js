@@ -17,6 +17,7 @@ const mock = require('./data/mock.json');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../config/express');
+const config = require("../config/variable");
 const {initInMemoryDB, removeInMemoryCollections} = require("./helper/helper");
 const should = chai.should();
 
@@ -29,14 +30,16 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
         requester = chai.request(server);
 
         mockgoose.prepareStorage()
-            .then(() => initInMemoryDB(mongoose, User, Event, mock, requester))
+            .then(() => {
+                return initInMemoryDB(mongoose, User, Event, mock, requester)
+            })
             .then(({testUser, testToken}) => {
                 user = testUser;
                 token = testToken;
 
                 done();
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log('Error: ', error);
                 done();
             })
@@ -50,7 +53,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
     it('it should GET all events by user', function (done) {
         requester
             .get('/api/v1/events')
-            .set('x-auth-token', token)
+            .set('config.common.jwtHeader', token)
             .end(function (err, res) {
 
                 res.should.have.status(200);
@@ -77,7 +80,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
             requester
                 .patch('/api/v1/events')
-                .set('x-auth-token', token)
+                .set('config.common.jwtHeader', token)
                 .send(event)
                 .end(function (err, res) {
                     res.should.have.status(httpStatus.CREATED);
@@ -99,7 +102,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
             requester
                 .patch('/api/v1/events')
-                .set('x-auth-token', token)
+                .set('config.common.jwtHeader', token)
                 .send(event)
                 .end(function (err, res) {
                     res.should.have.status(httpStatus.BAD_REQUEST);
@@ -112,7 +115,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
             requester
                 .patch('/api/v1/events')
-                .set('x-auth-token', token)
+                .set('config.common.jwtHeader', token)
                 .send(event)
                 .end(function (err, res) {
                     res.should.have.status(httpStatus.BAD_REQUEST);
@@ -136,7 +139,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
         new Event(event)
             .save()
-            .then(newEvent => {
+            .then((newEvent) => {
                 const payload = {
                     title: 'Updated Title',
                     description: 'Updated Description',
@@ -145,7 +148,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
                 requester
                     .post('/api/v1/events/' + newEvent.eventId)
-                    .set('x-auth-token', token)
+                    .set('config.common.jwtHeader', token)
                     .send(payload)
                     .end(function (err, res) {
                         res.should.have.status(httpStatus.OK);
@@ -157,7 +160,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
                         done();
                     })
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log("Error: ", error);
                 done();
             })
@@ -174,10 +177,10 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
 
             new Event(event)
                 .save()
-                .then(newEvent => {
+                .then((newEvent) => {
                     requester
                         .delete('/api/v1/events/' + newEvent.eventId)
-                        .set('x-auth-token', token)
+                        .set(config.common.jwtHeader, token)
                         .end(function (err, res) {
                             res.should.have.status(httpStatus.OK);
                             res.body.should.have.property('event');
@@ -186,7 +189,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
                             done();
                         })
                 })
-                .catch(error => {
+                .catch((error) => {
                     console.log("Error: ", error);
                     done();
                 })
@@ -195,7 +198,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
         it('it should delete MULTIPLE events', function (done) {
             requester
                 .delete('/api/v1/events')
-                .set('x-auth-token', token)
+                .set('config.common.jwtHeader', token)
                 .send({eventIds: eventIds})
                 .end(function (err, res) {
                     res.should.have.status(httpStatus.OK);
@@ -207,7 +210,7 @@ describe('TESTING EVENTS ENDPOINTS:', function () {
         });
     });
 
-    after(function (done) {
+    after((done) => {
         removeInMemoryCollections(mockgoose)
             .then(() => done());
     });

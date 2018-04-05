@@ -6,7 +6,7 @@ const mongoose = require('mongoose');
 const Promise = require('bluebird');
 const winston = require('winston');
 mongoose.Promise = Promise;
-const globalConfig = require('./variable');
+const config = require('./variable');
 
 /**
  * Establish connection with mongo database
@@ -18,7 +18,7 @@ const globalConfig = require('./variable');
  */
 function connect() {
     mongoose
-        .connect(globalConfig.mongo.uri + globalConfig.mongo.db, {
+        .connect(config.mongo.uri + config.mongo.db, {
             keepAlive: 1,
             useMongoClient: true,
         })

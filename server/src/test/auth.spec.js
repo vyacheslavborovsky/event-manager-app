@@ -17,7 +17,7 @@ const mock = require('./data/mock.json');
 let chai = require('chai');
 let chaiHttp = require('chai-http');
 let server = require('../config/express');
-const globalConfig = require("../config/variable");
+const config = require("../config/variable");
 const removeInMemoryCollections = require("./helper/helper").removeInMemoryCollections;
 const should = chai.should();
 
@@ -30,7 +30,7 @@ describe('TESTING AUTH FUNCTIONALITY', function () {
         requester = chai.request(server);
 
         mockgoose.prepareStorage()
-            .then(() => mongoose.connect(globalConfig.mongo.uri + globalConfig.mongo.db, {
+            .then(() => mongoose.connect(config.mongo.uri + config.mongo.db, {
                 keepAlive: 1,
                 useMongoClient: true,
             }))
@@ -63,8 +63,8 @@ describe('TESTING AUTH FUNCTIONALITY', function () {
                 res.should.have.status(httpStatus.OK);
                 res.body.should.have.property('success');
                 res.body.success.should.be.true;
-                res.body.should.have.property('x-auth-token');
-                res.body['x-auth-token'].length.should.be.gt(0);
+                res.body.should.have.property('config.common.jwtHeader');
+                res.body['config.common.jwtHeader'].length.should.be.gt(0);
 
                 done();
             })

@@ -63,7 +63,8 @@ EventSchema.statics.getUpcomingEvents = function () {
 };
 
 EventSchema.statics.getUsersActivityData = function () {
-    const now = new Date();
+    let now = new Date();
+
     return this.aggregate([
         {
             $project: {

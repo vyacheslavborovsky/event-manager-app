@@ -8,16 +8,21 @@ const config = require("../../config/variable");
  * Middleware function to extract jwt token from incoming request
  * @type {middleware}
  */
-const authenticate = expressJwt({
-    secret: config.common.jwtSecret,
-    requestProperty: 'auth',
-    getToken: function (req) {
-        if (req.headers['x-auth-token']) {
-            return req.headers['x-auth-token'];
-        }
+function authenticate() {
+    let jwtOptions = {
+        secret: config.common.jwtSecret,
+        requestProperty: 'auth',
+        getToken: function (req) {
+            if (req.headers[config.common.jwtHeader]) {
+                return req.headers[config.common.jwtHeader];
+            }
 
-        return null;
-    }
-});
+            return null;
+        }
+    };
+
+    return expressJwt(jwtOptions);
+}
+
 
 exports.authenticate = authenticate;

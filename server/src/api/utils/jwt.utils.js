@@ -21,7 +21,7 @@ function createToken(user) {
             id: user.id,
         }, config.common.jwtSecret,
         {
-            expiresIn: 60 * 120
+            expiresIn: config.common.jwtExpire
         });
 }
 
@@ -52,11 +52,11 @@ function generateToken(req, res, next) {
  * @param {object} res - express self-generated http response object
  *
  * @param {number} res.status
- * @param {string} res.x-auth-token
+ * @param {string} res.config.common.jwtHeader
  * @param {boolean} res.success
  */
 function sendToken(req, res) {
-    return res.status(httpStatus.OK).json({'x-auth-token': req.token, success: true});
+    return res.status(httpStatus.OK).json({'config.common.jwtHeader': req.token, success: true});
 }
 
 exports.generateToken = generateToken;

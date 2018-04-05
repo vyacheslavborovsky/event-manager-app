@@ -2,13 +2,13 @@
  * @namespace passport
  */
 
+const AppError = require('../api/utils/error');
 const bcrypt = require('bcryptjs');
 const config = require('./variable');
+const httpStatus = require('http-status');
 const LocalStrategy = require('passport-local').Strategy;
 const TwitterTokenStrategy = require('passport-twitter-token');
-const httpStatus = require('http-status');
 const User = require('mongoose').model('User');
-const AppError = require('../api/utils/error');
 
 const registerStrategy = new LocalStrategy({
     usernameField: 'username',
@@ -24,9 +24,9 @@ const registerStrategy = new LocalStrategy({
         ]
     })
         .exec()
-        .then(user => {
+        .then((user) => {
             if (!user) {
-                const newUser = new User({
+                let newUser = new User({
                     local: {
                         username: username,
                         password: bcrypt.hashSync(password, 8),
@@ -39,8 +39,8 @@ const registerStrategy = new LocalStrategy({
                 return Promise.reject(new AppError("User with such username/email already exists.", httpStatus.OK, true));
             }
         })
-        .then(newlyUser => done(null, newlyUser))
-        .catch(error => done(error));
+        .then((newlyUser) => done(null, newlyUser))
+        .catch((error) => done(error));
 });
 
 const loginStrategy = new LocalStrategy({
@@ -51,7 +51,7 @@ const loginStrategy = new LocalStrategy({
     User
         .findOne({'local.username': username})
         .exec()
-        .then(user => {
+        .then((user) => {
             if (user) {
                 if (!bcrypt.compareSync(password, user.local.password)) {
                     return Promise.reject(new AppError("Password invalid. Try again, please.", httpStatus.OK, true));
@@ -62,7 +62,7 @@ const loginStrategy = new LocalStrategy({
                 return Promise.reject(new AppError("Account not found. Please, check your credential.", httpStatus.OK, true));
             }
         })
-        .catch(error => done(error));
+        .catch((error) => done(error));
 });
 
 const twitterAuthStrategy = new TwitterTokenStrategy({
@@ -73,8 +73,8 @@ const twitterAuthStrategy = new TwitterTokenStrategy({
     passReqToCallback: true
 }, function (req, token, tokenSecret, profile, done) {
     User.insertTwitterData(req, token, tokenSecret, profile)
-        .then(response => done(null, response))
-        .catch(error => done(error));
+        .then((user) => done(null, user))
+        .catch((error) => done(error));
 });
 
 /**
@@ -91,8 +91,8 @@ function initPassportStrategies(passport) {
     passport.deserializeUser(id => User
         .findById(id)
         .exec()
-        .then(user => done(null, user))
-        .catch(error => done(error))
+        .then((user) => done(null, user))
+        .catch((error) => done(error))
     );
 
     passport.use('local-register', registerStrategy);

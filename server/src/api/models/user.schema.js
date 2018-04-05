@@ -42,41 +42,28 @@ UserSchema.set('toJSON', {getters: true, virtuals: true});
 UserSchema.statics.insertTwitterData = function (req, token, tokenSecret, profile) {
     const User = this;
 
-    return new Promise(function (resolve, reject) {
-        if (req.query.currentUserId) {
-            const findQuery = User.findById(req.query.currentUserId).exec();
+    if (req.query.currentUserId) {
+        return User
+            .findById(req.query.currentUserId)
+            .exec()
+            .then((user) => {
+                if (user) {
+                    user.twitter = {
+                        id: profile['id'],
+                        token: token,
+                        tokenSecret: tokenSecret,
+                        username: profile['displayName'],
+                        name: profile['username'],
+                        avatarUrl: profile['photos'][0]['value'],
+                        email: profile['emails'][0]['value']
+                    };
 
-            findQuery
-                .then(function (user) {
-                    if (user) {
-                        user.twitter = {
-                            id: profile['id'],
-                            token: token,
-                            tokenSecret: tokenSecret,
-                            username: profile['displayName'],
-                            name: profile['username'],
-                            avatarUrl: profile['photos'][0]['value'],
-                            email: profile['emails'][0]['value']
-                        };
-
-                        const saveQuery = user.save();
-
-                        saveQuery
-                            .then(function (user) {
-                                resolve(user);
-                            })
-                            .catch(function (error) {
-                                reject('Error during save twitter data: ', error);
-                            });
-                    }
-                })
-                .catch(function (error) {
-                    reject('Error during find user: ', error);
-                });
-        } else {
-            reject('userId field is missing. Request has benn terminated.')
-        }
-    });
+                    return user.save();
+                }
+            })
+    } else {
+        return Promise.reject('userId field is missing. Request has benn terminated.')
+    }
 };
 
 exports = mongoose.model('User', UserSchema);

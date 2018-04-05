@@ -1,9 +1,9 @@
-const globalConfig = require("../../config/variable");
+const config = require("../../config/variable");
 const bcrypt = require('bcryptjs');
 
 
 function initInMemoryDB(mongoose, User, Event, mockData, requester) {
-    mongoose.connect(globalConfig.mongo.uri + globalConfig.mongo.db, {
+    return mongoose.connect(config.mongo.uri + config.mongo.db, {
         keepAlive: 1,
         useMongoClient: true,
     })
@@ -54,7 +54,7 @@ function initInMemoryDB(mongoose, User, Event, mockData, requester) {
                     if (error) {
                         return Promise.reject(`login error: ${error}`);
                     } else {
-                        testToken = res.body['x-auth-token'];
+                        testToken = res.body['config.common.jwtHeader'];
                         return Promise.resolve({testUser: response.testUser, testToken: testToken})
                     }
                 });

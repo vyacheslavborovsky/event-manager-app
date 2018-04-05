@@ -2,15 +2,15 @@
  * @namespace Twitter
  */
 
-const Twitter = require('promised-twit');
 const config = require('./variable');
+const Twitter = require('promised-twit');
 
 const myTwitter = new Twitter({
     consumer_key: config.twitterProvider.consumerKey,
     consumer_secret: config.twitterProvider.consumerSecret,
     access_token: config.twitterProvider.accessTokenKey,
     access_token_secret: config.twitterProvider.accessTokenSecret,
-    timeout_ms: 60 * 1000 * 2
+    timeout_ms: config.twitterProvider.twitterTimeout
 });
 
 /**

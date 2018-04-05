@@ -61,7 +61,9 @@ function initWebSocket(server) {
 
     setInterval(() => {
         webSocketServer.clients.forEach(wsClient => {
-            if (wsClient.isAlive === false) return wsClient.terminate();
+            if (wsClient.isAlive === false) {
+                return wsClient.terminate();
+            }
 
             wsClient.isAlive = false;
             wsClient.ping(noop);

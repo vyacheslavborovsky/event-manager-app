@@ -3,7 +3,9 @@
  * @type {getSocketServer}
  */
 
+const config = require('../../config/variable');
 const winston = require("winston");
+const sendWelcomeMessage = require("./mailer").sendWelcomeMessage;
 const getSocketServer = require("../../config/websocket").getSocketServer;
 const {fork} = require('child_process');
 const notification = fork(__dirname + '/../services/notifications.js');
@@ -58,9 +60,30 @@ function notificationHandler({message, payload, userId}) {
  */
 function runNotificationJob() {
     sendStartMessage();
-    setInterval(sendStartMessage, 1000 * 60 * 15);
+    setInterval(sendStartMessage, config.common.notificationDelay);
 
     notification.on('message', notificationHandler);
 }
 
+/**
+ * Send email
+ */
+function signUpNotify() {
+    sendWelcomeMessage(user.local.username, user.local.email)
+        .then((response) => {
+            winston.info('Welcome message has been sent.');
+        })
+        .catch((error) => {
+            winston.error(`Send welcome message error: ${error}`);
+        });
+
+    const payload = {
+        ACTION_TYPE: 'REGISTERED_USER',
+        username: user.local.username
+    };
+
+    getSocketServer().broadcast(payload);
+}
+
 exports.runNotificationJob = runNotificationJob;
+exports.signUpNotify = signUpNotify;

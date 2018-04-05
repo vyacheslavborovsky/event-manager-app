@@ -9,8 +9,7 @@ const postTwit = require("../../config/twitter").postTwit;
 const request = require("request-promise");
 const User = require('mongoose').model('User');
 const winston = require('winston');
-const {getSocketServer} = require('../../config/websocket');
-const {sendWelcomeMessage} = require("../utils/mailer");
+const signUpNotify = require("../utils/usersNotifyProcess").signUpNotify;
 
 
 /**
@@ -40,15 +39,7 @@ function signUp(req, res) {
             .json({message: "Error during register.", success: false});
     }
 
-    sendWelcomeMessage(user.local.username, user.local.email, getSocketServer());
-    const wss = getSocketServer();
-
-    const payload = {
-        ACTION_TYPE: 'REGISTERED_USER',
-        username: user.local.username
-    };
-
-    wss.broadcast(payload);
+    signUpNotify();
 
     return res
         .status(httpStatus.OK)
@@ -109,30 +100,32 @@ function twitterAuth(req, res, next) {
     const params = req.query.userId.split('?');
     const verifier = params[1].split('=')[1];
 
-    request
-        .post({
-            url: `https://api.twitter.com/oauth/access_token?oauth_verifier`,
-            oauth: {
-                consumer_key: config.twitterProvider.consumerKey,
-                consumer_secret: config.twitterProvider.consumerSecret,
-                token: req.query['oauth_token']
-            },
-            form: {
-                oauth_verifier: verifier
-            }
-        })
-        .then(body => {
-            const bodyString = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
-            const parsedBody = JSON.parse(bodyString);
+    let options = {
+        url: config.twitterProvider.twitterAccessUrl,
+        oauth: {
+            consumer_key: config.twitterProvider.consumerKey,
+            consumer_secret: config.twitterProvider.consumerSecret,
+            token: req.query.oauth_token
+        },
+        form: {
+            oauth_verifier: verifier
+        }
+    };
 
-            req.body['oauth_token'] = parsedBody.oauth_token;
-            req.body['oauth_token_secret'] = parsedBody.oauth_token_secret;
-            req.body['user_id'] = parsedBody.user_id;
+    request
+        .post(options)
+        .then((body) => {
+            let bodyString = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
+            let parsedBody = JSON.parse(bodyString);
+
+            req.body.oauth_token = parsedBody.oauth_token;
+            req.body.oauth_token_secret = parsedBody.oauth_token_secret;
+            req.body.user_id = parsedBody.user_id;
             req.query.currentUserId = params[0];
 
             return next();
         })
-        .catch(error => res
+        .catch((error) => res
             .status(httpStatus.INTERNAL_SERVER_ERROR)
             .json({message: error.message}));
 }
@@ -155,20 +148,24 @@ function twitterAuth(req, res, next) {
  * @param {string} res.data.user_id - twitter profile id
  */
 function twitterRequestToken(req, res) {
+    let options = {
+        url: config.twitterProvider.twitterRequestUrl,
+        oauth: {
+            oauth_callback: config.twitterProvider.callbackUrl,
+            consumer_key: config.twitterProvider.consumerKey,
+            consumer_secret: config.twitterProvider.consumerSecret
+        }
+    };
+
     request
-        .post({
-            url: 'https://api.twitter.com/oauth/request_token',
-            oauth: {
-                oauth_callback: config.twitterProvider.callbackUrl,
-                consumer_key: config.twitterProvider.consumerKey,
-                consumer_secret: config.twitterProvider.consumerSecret
-            }
-        })
-        .then(body => {
+        .post(options)
+        .then((body) => {
             const jsonStr = '{ "' + body.replace(/&/g, '", "').replace(/=/g, '": "') + '"}';
             return res.send(JSON.parse(jsonStr));
         })
-        .catch(error => res.send(500, {message: error.message}));
+        .catch((error) => {
+            return res.send(500, {message: error.message})
+        });
 }
 
 /**
@@ -193,10 +190,10 @@ function sendTwitterData(req, res) {
     }
 
     postTwit(".@" + req.user.twitter.name + " has been registered in my event manager app.")
-        .then(data => {
+        .then((data) => {
             winston.info('Register twit has been posted.');
         })
-        .catch(error => {
+        .catch((error) => {
             winston.error(`An error occurred during posting the twit: ${error.message}`);
         });
 
@@ -224,14 +221,14 @@ function getCurrentUser(req, res) {
     User
         .findById(req.auth.id)
         .exec()
-        .then(user => {
+        .then((user) => {
             if (user) {
                 return res.status(httpStatus.OK).json(user);
             } else {
                 return Promise.reject(new AppError(`Couldn\'t find user with id ${req.auth.id}`, httpStatus.OK, true))
             }
         })
-        .catch(error => res
+        .catch((error) => res
             .status(error.status || httpStatus.INTERNAL_SERVER_ERROR)
             .json({
                 message: `Error on getting current user: ${error.message}`,
