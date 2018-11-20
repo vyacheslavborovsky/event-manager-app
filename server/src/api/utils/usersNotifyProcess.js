@@ -68,7 +68,7 @@ function runNotificationJob() {
 /**
  * Send email
  */
-function signUpNotify() {
+function signUpNotify(user) {
     sendWelcomeMessage(user.local.username, user.local.email)
         .then((response) => {
             winston.info('Welcome message has been sent.');

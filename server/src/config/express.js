@@ -19,7 +19,7 @@ const winston = require('./winston');
 const errorHandler = require("../api/middleware/common").errorHandler;
 const {authenticate} = require("../api/middleware/auth.middleware");
 
-const secretWord = '';
+const secretWord = 'event-manager-app';
 
 let authRateLimiter = new RateLimit({
     windowMs: 60 * 60 * 60,

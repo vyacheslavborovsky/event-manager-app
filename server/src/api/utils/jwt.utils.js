@@ -56,7 +56,7 @@ function generateToken(req, res, next) {
  * @param {boolean} res.success
  */
 function sendToken(req, res) {
-    return res.status(httpStatus.OK).json({'config.common.jwtHeader': req.token, success: true});
+    return res.status(httpStatus.OK).json({[config.common.jwtHeader]: req.token, success: true});
 }
 
 exports.generateToken = generateToken;

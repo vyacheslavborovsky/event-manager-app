@@ -27,9 +27,9 @@ function sendWelcomeMessage(username, toEmail) {
                 `,
         html: `<p>Dear <b style="font-size: larger; color: brown; font-family: 'Copperplate Gothic Light',sans-serif">${username}</b>!</p> 
                 <p>Welcome to our event manager app. We are glad to have you on a board.</p>
-                <p>Feel free to write us if you have any questions about the platform and happy working with your awesome events.<p/>
-                <p>Best regards.</p>
-                <p>Event manager app support.</p>
+                <p>Feel free to contact us if you have any questions about the platform and happy working with your awesome events.<p/>
+                <p>Best regards,</p>
+                <p>Event Manager App support.</p>
                 `
     };
 

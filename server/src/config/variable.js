@@ -14,7 +14,7 @@ module.exports = {
     common: {
         jwtSecret: 'secret-code',
         jwtExpire: 7200,
-        jwtHeader: 'config.common.jwtHeader',
+        jwtHeader: 'x-auth-token',
         notificationDelay: 900000,
         expressSessionSecret: "my-super-power-secret",
         port: process.env.PORT,

@@ -6,7 +6,7 @@ services:
     ports:
       - "80:8000"
     restart: always
-    env_file: ./server/.env.production
+    env_file: ./server/.env.productioncls
     command: npm start
     environment:
       NODE_ENV: production

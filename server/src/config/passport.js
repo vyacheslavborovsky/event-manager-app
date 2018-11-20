@@ -88,11 +88,12 @@ const twitterAuthStrategy = new TwitterTokenStrategy({
 function initPassportStrategies(passport) {
     passport.serializeUser((user, done) => done(null, user.id));
 
-    passport.deserializeUser(id => User
-        .findById(id)
-        .exec()
-        .then((user) => done(null, user))
-        .catch((error) => done(error))
+    passport.deserializeUser((id, done) => {
+            User.findById(id)
+                .exec()
+                .then((user) => done(null, user))
+                .catch((error) => done(error))
+        }
     );
 
     passport.use('local-register', registerStrategy);

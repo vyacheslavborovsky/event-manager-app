@@ -39,7 +39,7 @@ function signUp(req, res) {
             .json({message: "Error during register.", success: false});
     }
 
-    signUpNotify();
+    signUpNotify(req.user);
 
     return res
         .status(httpStatus.OK)

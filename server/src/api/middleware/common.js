@@ -19,13 +19,14 @@ function errorHandler(err, req, res, next) {
     res.locals.message = err.message;
     res.locals.error = config.mode === 'development' ? err : {};
 
-    winston.error(`${err.status || httpStatus.INTERNAL_SERVER_ERROR} - ${err.message} - Is Operational: ${req.isOperational || 'False'} - ${req.originalUrl} - ${req.method} - on domain: ${process.domain.id} - ${req.ip}`);
+    // winston.error(`${err.status || httpStatus.INTERNAL_SERVER_ERROR} - ${err.message} - Is Operational: ${req.isOperational || 'False'} - ${req.originalUrl} - ${req.method} - on domain: ${process.domain.id} - ${req.ip}`);
 
+    const status = err.status >= 100 && err.status < 600 ? err.status : 500
     res
-        .status(err.status)
+        .status(status)
         .json({
-            code: err.status || httpStatus.INTERNAL_SERVER_ERROR,
-            message: err.message || httpStatus[err.status]
+            code: status,
+            message: err.message || httpStatus[status]
         });
 
     res.end();
